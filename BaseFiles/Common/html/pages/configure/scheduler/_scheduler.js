@@ -9,7 +9,22 @@ HG.WebApp.Scheduler.InitializePage = function () {
         HG.WebApp.Scheduler.RefreshEventDetails();
     });
     //
-    $('#scheduleritem_update_button').bind('click', function (event) {
+    $('#schedulerservice_item_cronwizard').on('click', function(event) {
+        $('#schedulerservice_item_edit').one('popupafterclose', function(){
+            HG.Ui.Popup.CronWizard.element.one('popupafterclose', function(){
+                $('#schedulerservice_item_edit').popup('open');
+            });
+            HG.Ui.Popup.CronWizard.open();
+            HG.Ui.Popup.CronWizard.onChange = function(expr){
+                setTimeout(function(){
+                    $('#schedulerservice_item_cronexp').val(expr);
+                }, 500);
+            };
+        });
+        $('#schedulerservice_item_edit').popup('close');
+    });
+    //
+    $('#scheduleritem_update_button').on('click', function (event) {
         var name = $('#schedulerservice_item_name').val();
         var expr = $('#schedulerservice_item_cronexp').val();
         var prid = $('#schedulerservice_item_programid').val();
@@ -18,7 +33,7 @@ HG.WebApp.Scheduler.InitializePage = function () {
         });
     });
     //
-    $('#scheduleritem_delete_button').bind('click', function (event) {
+    $('#scheduleritem_delete_button').on('click', function (event) {
         var name = $('#schedulerservice_item_name').val();
         HG.Automation.Scheduling.Delete(name, function () {
             HG.WebApp.Scheduler.LoadScheduling();
@@ -27,7 +42,8 @@ HG.WebApp.Scheduler.InitializePage = function () {
         HG.WebApp.Scheduler._CurrentEventIndex = -1;
     });
     //
-    $('#scheduleritem_add_button').bind('click', function (event) {
+    $('#scheduleritem_add_button').on('click', function (event) {
+        $('#schedulerservice_item_name').val('');
         HG.WebApp.Scheduler._CurrentEventName = "";
         HG.WebApp.Scheduler._CurrentEventIndex = -1;
     });
@@ -47,9 +63,9 @@ HG.WebApp.Scheduler.GetItemMarkup = function (schedule) {
     //                triggertime = triggerts.format('L LT');
     //            }
     //
-    item += '	<p class="ui-li-aside ui-li-desc"><strong>&nbsp;' + schedule.ProgramId + '</strong><br><font style="opacity:0.5">' + 'Last: ' + schedule.LastOccurrence + '<br>' + 'Next: ' + schedule.NextOccurrence +'</font></p>';
+    item += '	<p class="ui-li-aside ui-li-desc"><strong>&nbsp;' + schedule.ProgramId + '</strong><br><font style="opacity:0.5">' + 'Last: ' + schedule.LastOccurrence + '<br>' + 'Next: ' + schedule.NextOccurrence + '</font></p>';
     item += '	<h3 class="ui-li-heading">' + displayName + '</h3>';
-    item += '	<p class="ui-li-desc">' + schedule.CronExpression + ' &nbsp;</p>';
+    item += '	<p class="ui-li-desc"><span style="font-family:monospace;font-weight:bold">' + schedule.CronExpression + '</span> &nbsp;&nbsp; ' + schedule.Description + '</p>';
     item += '</a>';
     item += '<a href="javascript:HG.WebApp.Scheduler.ToggleScheduleIsEnabled(\'' + i + '\')">' + (schedule.IsEnabled ? 'Tap to DISABLE item' : 'Tap to ENABLE item') + '</a>';
     //
@@ -65,14 +81,12 @@ HG.WebApp.Scheduler.LoadScheduling = function (callback) {
         $.mobile.loading('hide');
         //
         $('#configure_schedulerservice_list').empty();
-        $('#configure_schedulerservice_list').append('<li data-icon="false" data-role="list-divider">'+HG.WebApp.Locales.GetLocaleString('configure_scheduler_events')+'</li>');
+        $('#configure_schedulerservice_list').append('<li data-icon="false" data-role="list-divider">' + HG.WebApp.Locales.GetLocaleString('configure_scheduler_events') + '</li>');
         //
         // element containing '.' in the name are grouped in own sections
-        for (i = 0; i < HG.WebApp.Scheduler._ScheduleList.length; i++)
-        {
+        for (i = 0; i < HG.WebApp.Scheduler._ScheduleList.length; i++) {
             var schedule = HG.WebApp.Scheduler._ScheduleList[i];
-            if (schedule.Name.indexOf('.') < 0)
-            {
+            if (schedule.Name.indexOf('.') < 0) {
                 var item = HG.WebApp.Scheduler.GetItemMarkup(schedule);
                 $('#configure_schedulerservice_list').append(item);
             }
@@ -83,8 +97,7 @@ HG.WebApp.Scheduler.LoadScheduling = function (callback) {
             if (schedule.Name.indexOf('.') > 0) {
                 var scheduleGroup = schedule.Name.substring(0, schedule.Name.indexOf('.'));
                 var item = HG.WebApp.Scheduler.GetItemMarkup(schedule);
-                if (scheduleGroup != currentGroup)
-                {
+                if (scheduleGroup != currentGroup) {
                     $('#configure_schedulerservice_list').append('<li data-role="list-divider">' + scheduleGroup + '</li>');
                     currentGroup = scheduleGroup;
                 }
@@ -115,11 +128,11 @@ HG.WebApp.Scheduler.RefreshEventDetails = function () {
         expr = schedule.CronExpression;
         prid = schedule.ProgramId;
         $('#schedulerservice_item_name').addClass('ui-disabled');
+        $('#schedulerservice_item_name').val(name);
     }
     else {
         $('#schedulerservice_item_name').removeClass('ui-disabled');
     }
-    $('#schedulerservice_item_name').val(name);
     $('#schedulerservice_item_cronexp').val(expr);
     $('#schedulerservice_item_programid').val(prid);
 
@@ -128,14 +141,12 @@ HG.WebApp.Scheduler.RefreshEventDetails = function () {
 HG.WebApp.Scheduler.ToggleScheduleIsEnabled = function (index) {
     var item = HG.WebApp.Scheduler._ScheduleList[index];
     $.mobile.loading('show');
-    if (item.IsEnabled)
-    {
+    if (item.IsEnabled) {
         HG.Automation.Scheduling.Disable(item.Name, function () {
             HG.WebApp.Scheduler.LoadScheduling();
         });
     }
-    else
-    {
+    else {
         HG.Automation.Scheduling.Enable(item.Name, function () {
             HG.WebApp.Scheduler.LoadScheduling();
         });

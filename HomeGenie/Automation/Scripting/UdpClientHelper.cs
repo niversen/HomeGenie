@@ -31,12 +31,13 @@ namespace HomeGenie.Automation.Scripting
 {
 
     /// <summary>
-    /// Udp client helper.\n
-    /// Class instance accessor: **udpClient**
+    /// UDP client helper.\n
+    /// Class instance accessor: **UdpClient**
     /// </summary>
+    [Serializable]
     public class UdpClientHelper
     {
-        private UDPClient udpClient;
+        private UdpClient udpClient;
         private Action<byte[]> dataReceived;
         private Action<string> stringReceived;
         private Action<bool> statusChanged;
@@ -45,13 +46,13 @@ namespace HomeGenie.Automation.Scripting
 
         public UdpClientHelper()
         {
-            udpClient = new UDPClient();
+            udpClient = new UdpClient();
         }
 
         /// <summary>
         /// Sets the client as a sender to address:port
         /// </summary>
-        /// <returns>udpClientHelper.</returns>
+        /// <returns>UdpClientHelper.</returns>
         /// <param name="address">Remote DNS or IP address.</param>
         /// <param name="port">port to send to</param>
         public UdpClientHelper Sender(string address, int port)
@@ -155,6 +156,11 @@ namespace HomeGenie.Automation.Scripting
         {
             get { return textEndOfLine[0]; }
             set { textEndOfLine = new string[] { value }; }
+        }
+        
+        public void Reset()
+        {
+            Disconnect();
         }
 
         private void udpClient_MessageReceived(byte[] message)

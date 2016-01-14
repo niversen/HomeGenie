@@ -24,10 +24,10 @@
         "@value": "03"
       },
       "protoSubVersion": {
-        "@value": "95"
+        "@value": "5f"
       },
       "appVersion": {
-        "@value": "14"
+        "@value": "0e"
       },
       "appSubVersion": {
         "@value": "06"
@@ -36,7 +36,10 @@
         "@value": "04"
       },
       "genericClass": {
-        "@value": "a1"
+        "@value": "07"
+      },
+      "specificClass": {
+        "@value": "01"
       },
       "optional": {
         "@value": "true"
@@ -128,9 +131,15 @@
         "@maxNodes": "5",
         "description": {
           "lang": {
-            "@xml:lang": "en"
+            "@xml:lang": "en",
+            "#text": "Lifeline"
           }
         }
+      }
+    },
+    "resourceLinks": {
+      "deviceImage": {
+        "@url": "http://www.pepper1.net/zwavedb/uploads/resources/3b553f7e0472e075bea93f84bdeba2b77440283e.png"
       }
     }
   }

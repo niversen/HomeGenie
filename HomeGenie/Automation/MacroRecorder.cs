@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using HomeGenie.Service.Constants;
 
 namespace HomeGenie.Automation
 {
@@ -39,15 +40,15 @@ namespace HomeGenie.Automation
     {
         // vars for macro record fn
         private bool isMacroRecordingEnabled = false;
-        private List<MIGInterfaceCommand> macroCommands = new List<MIGInterfaceCommand>();
+        private List<MigInterfaceCommand> macroCommands = new List<MigInterfaceCommand>();
         private DateTime currentTimestamp = DateTime.Now;
         private double delaySeconds = 1;
         private MacroDelayType delayType = MacroDelayType.Fixed;
         //private DateTime startTimestamp = DateTime.Now;
 
-        private ProgramEngine masterControlProgram;
+        private ProgramManager masterControlProgram;
 
-        public MacroRecorder(ProgramEngine mcp)
+        public MacroRecorder(ProgramManager mcp)
         {
             masterControlProgram = mcp;
         }
@@ -78,7 +79,7 @@ namespace HomeGenie.Automation
             {
                 var command = new ProgramCommand();
                 command.Domain = migCommand.Domain;
-                command.Target = migCommand.NodeId;
+                command.Target = migCommand.Address;
                 command.CommandString = migCommand.Command;
                 command.CommandArguments = "";
                 if (!string.IsNullOrEmpty(migCommand.GetOption(0)) && migCommand.GetOption(0) != "null")
@@ -93,7 +94,7 @@ namespace HomeGenie.Automation
             return program;
         }
 
-        public void AddCommand(MIGInterfaceCommand cmd)
+        public void AddCommand(MigInterfaceCommand cmd)
         {
             double delay = 0;
             switch (delayType)
@@ -114,7 +115,7 @@ namespace HomeGenie.Automation
                 if (delay > 0 && macroCommands.Count > 0)
                 {
                     // add a pause command to the macro
-                    macroCommands.Add(new MIGInterfaceCommand("HomeAutomation.HomeGenie/Automation/Program.Pause/" + delay.ToString(System.Globalization.CultureInfo.InvariantCulture)));
+                    macroCommands.Add(new MigInterfaceCommand(Domains.HomeAutomation_HomeGenie + "/Automation/Program.Pause/" + delay.ToString(System.Globalization.CultureInfo.InvariantCulture)));
                 }
                 macroCommands.Add(cmd);
             }

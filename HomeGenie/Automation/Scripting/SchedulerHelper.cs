@@ -29,6 +29,12 @@ using System.Text;
 
 namespace HomeGenie.Automation.Scripting
 {
+    
+    /// <summary>
+    /// Scheduler helper.\n
+    /// Class instance accessor: **Scheduler**
+    /// </summary>
+    [Serializable]
     public class SchedulerHelper
     {
 
@@ -40,38 +46,69 @@ namespace HomeGenie.Automation.Scripting
             homegenie = hg;
         }
 
+        /// <summary>
+        /// Select the schedule with the specified name.
+        /// </summary>
+        /// <param name="name">Name.</param>
         public SchedulerHelper WithName(string name)
         {
             scheduleName = name;
             return this;
         }
 
+        /// <summary>
+        /// Add/Modify the schedule with the previously selected name.
+        /// </summary>
+        /// <param name="cronExpression">Cron expression.</param>
         public SchedulerHelper SetSchedule(string cronExpression)
         {
-            homegenie.ProgramEngine.SchedulerService.AddOrUpdate(scheduleName, cronExpression);
+            homegenie.ProgramManager.SchedulerService.AddOrUpdate(scheduleName, cronExpression);
             return this;
         }
 
+        /// <summary>
+        /// Sets the program id to run when the selected schedule occurs.
+        /// </summary>
+        /// <param name="programId">Program ID.</param>
         public SchedulerHelper SetProgram(string programId)
         {
-            homegenie.ProgramEngine.SchedulerService.SetProgram(scheduleName, programId);
+            homegenie.ProgramManager.SchedulerService.SetProgram(scheduleName, programId);
             return this;
         }
 
+        /// <summary>
+        /// Determines whether the selected schedule is matching in this very moment.
+        /// </summary>
+        /// <returns><c>true</c> if the selected schedule is matching, otherwise, <c>false</c>.</returns>
         public bool IsScheduling()
         {
-            var eventItem = homegenie.ProgramEngine.SchedulerService.Get(scheduleName);
+            var eventItem = homegenie.ProgramManager.SchedulerService.Get(scheduleName);
             if (eventItem != null)
             {
-                return homegenie.ProgramEngine.SchedulerService.IsScheduling(eventItem.CronExpression);
+                return homegenie.ProgramManager.SchedulerService.IsScheduling(DateTime.Now, eventItem.CronExpression);
             }
             return false;
         }
 
+        /// <summary>
+        /// Determines whether the given cron expression is matching at this very moment.
+        /// </summary>
+        /// <returns><c>true</c> if the given cron expression is matching; otherwise, <c>false</c>.</returns>
+        /// <param name="cronExpression">Cron expression.</param>
         public bool IsScheduling(string cronExpression)
         {
-            return homegenie.ProgramEngine.SchedulerService.IsScheduling(cronExpression);
+            return homegenie.ProgramManager.SchedulerService.IsScheduling(DateTime.Now, cronExpression);
         }
 
+        /// <summary>
+        /// Determines whether the given cron expression is a matching occurence at the given date/time.
+        /// </summary>
+        /// <returns><c>true</c> if the given cron expression is matching; otherwise, <c>false</c>.</returns>
+        /// <param name="date">Date.</param>
+        /// <param name="cronExpression">Cron expression.</param>
+        public bool IsOccurence(DateTime date, string cronExpression)
+        {
+            return homegenie.ProgramManager.SchedulerService.IsScheduling(date, cronExpression);
+        }
     }
 }

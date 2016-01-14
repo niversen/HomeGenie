@@ -1,17 +1,33 @@
 ﻿// HomeAutomation.HomeGenie / Config / System.Configure / System.ConfigurationBackup
 
 HG.WebApp.Maintenance = HG.WebApp.Maintenance || {};
+HG.WebApp.Maintenance.PageId = 'page_configure_maintenance';
 
 HG.WebApp.Maintenance.InitializePage = function () {
-    $('#page_configure_maintenance').on('pageinit', function (e) {
+    var page = $('#'+HG.WebApp.Maintenance.PageId);
+    page.on('pagebeforeshow', function (e) {
+        $('#restore_configuration_uploadfile').val('')
+    });
+    page.on('pageinit', function (e) {
+
         $('#systemsettings_httpport_change').bind('click', function () {
             var port = $('#http_service_port').val();
             $.mobile.loading('show');
             HG.System.SetHttpPort(port, function (data) {
+                $('#systemsettings_httpport_text').html(port);
                 $.mobile.loading('hide');
             });
         });
-        //
+
+        $('#systemsettings_httphostheader_change').bind('click', function () {
+           var host = $('#http_host_header').val();
+           $.mobile.loading('show');
+           HG.System.SetHostHeader(host, function (data) {
+               $('#systemsettings_hostheader_text').html(host);
+               $.mobile.loading('hide');
+           });
+        });
+
         $("#configure_system_flip_httpcache").on('slidestop', function (event) {
             $.mobile.loading('show');
             if ($("#configure_system_flip_httpcache").val() == '1') {
@@ -39,16 +55,23 @@ HG.WebApp.Maintenance.InitializePage = function () {
                 });
             }
         });
-		//
+        //
         $("#configure_system_flip_eventshistory").on('slidestop', function (event) {
             if ($("#configure_system_flip_eventshistory").val() == '1') {
-            	dataStore.set('UI.EventsHistory', true);
-            	$('#btn_eventshistory_led').show();
+                dataStore.set('UI.EventsHistory', true);
+                $('#btn_eventshistory_led').show();
             }
             else {
                 dataStore.set('UI.EventsHistory', false);
-            	$('#btn_eventshistory_led').hide();
+                $('#btn_eventshistory_led').hide();
             }
+        });
+        //
+        $("input[name='tempunit-choice']").on('change', function() {
+            dataStore.set('UI.TemperatureUnit', $(this).val());
+        });
+        $("input[name='dateformat-choice']").on('change', function() {
+            dataStore.set('UI.DateFormat', $(this).val());
         });
         //
         $('#configure_system_updatemanager_updatebutton').bind('click', function () {
@@ -69,36 +92,31 @@ HG.WebApp.Maintenance.InitializePage = function () {
                 html: ""
             });
             HG.System.UpdateManager.InstallUpdate(function (res) {
-                var r = eval(res);
-                if (typeof r != 'undefined') {
-                    // TODO: ....
-                    if (r[0].ResponseValue == 'OK') {
-                        $('#configure_system_updateinstall_status').html('Update install complete.');
-                        setTimeout(function () {
-                            document.location.href = '/';
-                        }, 3000);
-                    }
-                    else if (r[0].ResponseValue == 'RESTART') {
-                        $('#configure_system_updateinstall_status').html('Installing files... (HomeGenie service stopped)');
-                    }
-                    else if (r[0].ResponseValue == 'ERROR') {
-                        $('#configure_system_updateinstall_status').html('Error during installation progress.');
-                        //
-                        $.mobile.loading('hide');
-                        HG.WebApp.Maintenance.LoadUpdateCheckSettings();
-                    }
+                // TODO: ....
+                if (res.ResponseValue == 'OK') {
+                    $('#configure_system_updateinstall_status').html('Update install complete.');
+                    setTimeout(function() { window.location.replace("/"); }, 3000);
+                }
+                else if (res.ResponseValue == 'RESTART') {
+                    $('#configure_system_updateinstall_status').html('Installing files... (HomeGenie service stopped)');
+                }
+                else if (res.ResponseValue == 'ERROR') {
+                    $('#configure_system_updateinstall_status').html('Error during installation progress.');
+                    //
+                    $.mobile.loading('hide');
+                    HG.WebApp.Maintenance.LoadUpdateCheckSettings();
                 }
             });
         });
         //
         //$('systemsettings_updateinstall_popup').on('popupbeforeposition', function (event) {
-        //    
+        //
         //});
-        $('#configure_system_updatemanager_installbutton').bind('click', function () {
+        $('#configure_system_updatemanager_proceedbutton').bind('click', function () {
             $('#configure_system_updateinstall_button').addClass('ui-disabled');
             $('#configure_system_updatemanager_info').html('<strong>Downloading files...</strong>');
             $('#configure_system_updateinstall_log').empty();
-            $('#systemsettings_updateinstall_popup').popup('open');
+            HG.WebApp.Utility.SwitchPopup('#systemsettings_updatewarning_popup', '#systemsettings_updateinstall_popup', true)
             $('#configure_system_updateinstall_status').html('Downloading files...');
             $.mobile.loading('show', {
                 text: 'Please wait...',
@@ -108,22 +126,18 @@ HG.WebApp.Maintenance.InitializePage = function () {
             HG.System.UpdateManager.DownloadUpdate(function (res) {
                 $.mobile.loading('hide');
                 HG.WebApp.Maintenance.LoadUpdateCheckSettings();
-                //
-                var r = eval(res);
-                if (typeof r != 'undefined') {
-                    // TODO: ....
-                    if (r[0].ResponseValue == 'OK') {
-                        $('#configure_system_updateinstall_status').html('Update files ready.');
-                        $('#configure_system_updateinstall_button').removeClass('ui-disabled');
-                    }
-                    else if (r[0].ResponseValue == 'RESTART') {
-                        $('#configure_system_updateinstall_status').html('Update files ready. HomeGenie will be restarted after updating.');
-                        $('#configure_system_updateinstall_button').removeClass('ui-disabled');
-                    }
-                    else if (r[0].ResponseValue == 'ERROR') {
-                        $('#configure_system_updateinstall_status').html('Error while downloading update files.');
-                        $('#configure_system_updateinstall_button').addClass('ui-disabled');
-                    }
+                // TODO: ....
+                if (res.ResponseValue == 'OK') {
+                    $('#configure_system_updateinstall_status').html('Update files ready.');
+                    $('#configure_system_updateinstall_button').removeClass('ui-disabled');
+                }
+                else if (res.ResponseValue == 'RESTART') {
+                    $('#configure_system_updateinstall_status').html('Update files ready. HomeGenie will be restarted after updating.');
+                    $('#configure_system_updateinstall_button').removeClass('ui-disabled');
+                }
+                else if (res.ResponseValue == 'ERROR') {
+                    $('#configure_system_updateinstall_status').html('Error while downloading update files.');
+                    $('#configure_system_updateinstall_button').addClass('ui-disabled');
                 }
             });
         });
@@ -134,7 +148,7 @@ HG.WebApp.Maintenance.InitializePage = function () {
             HG.System.SetPassword(pass, function (data) {
                 $.mobile.loading('hide');
                 setTimeout(function () {
-                    HG.WebApp.Maintenance.LoadSecuritySettings();
+                    HG.WebApp.Maintenance.LoadHttpSettings();
                 }, 1000);
             });
         });
@@ -142,22 +156,22 @@ HG.WebApp.Maintenance.InitializePage = function () {
             $.mobile.loading('show');
             HG.System.ClearPassword(function (data) {
                 $.mobile.loading('hide');
-                HG.WebApp.Maintenance.LoadSecuritySettings();
+                HG.WebApp.Maintenance.LoadHttpSettings();
             });
         });
-		//
-		$('#btn_configuresystem_downloadtday').bind('click', function () {
+        //
+        $('#btn_configuresystem_downloadtday').bind('click', function () {
             window.open('/api/HomeAutomation.HomeGenie/Config/System.Configure/SystemLogging.DownloadCsv/0');
         });
-		//
-		$('#btn_configuresystem_downloadyday').bind('click', function () {
+        //
+        $('#btn_configuresystem_downloadyday').bind('click', function () {
             window.open('/api/HomeAutomation.HomeGenie/Config/System.Configure/SystemLogging.DownloadCsv/1');
         });
-		//
+        //
         $('#maintenance_configuration_restartproceedbutton').bind('click', function () {
-        	$('#maintenance_configuration_restartbutton').addClass('ui-disabled');
+            $('#maintenance_configuration_restartbutton').addClass('ui-disabled');
             $.mobile.loading('show', { text: 'Restarting service, please wait...', textVisible: true, theme: 'a', html: '' });
-            // FACTORY RESET....
+            // SYSTEM RESTART....
             HG.Configure.System.ServiceCall("Service.Restart", function (data) { });
         });
         //
@@ -176,8 +190,8 @@ HG.WebApp.Maintenance.InitializePage = function () {
                     .animate({ borderColor: "#FFFFFF" }, 250);
             }
             else {
-            	$('#systemsettings_backuprestores1cancelbutton').removeClass('ui-disabled');
-            	$('#systemsettings_backuprestores1confirmbutton').removeClass('ui-disabled');
+                $('#systemsettings_backuprestores1cancelbutton').removeClass('ui-disabled');
+                $('#systemsettings_backuprestores1confirmbutton').removeClass('ui-disabled');
                 $.mobile.loading('show', { text: 'Restoring backup, please wait...', textVisible: true, theme: 'a', html: '' });
                 $('#restore_configuration_form').submit();
             }
@@ -186,9 +200,10 @@ HG.WebApp.Maintenance.InitializePage = function () {
             $.mobile.loading('show', { text: 'Resetting to factory defaults, please wait...', textVisible: true, theme: 'a', html: '' });
             // FACTORY RESET....
             HG.Configure.System.ServiceCall("System.ConfigurationReset", function (data) {
-                alert('Factory Reset Completed!');
-                $.mobile.loading('hide');
-                window.location.replace("/");
+                setTimeout(function(){
+                    $.mobile.loading('hide');
+                    window.location.replace("/");
+                }, 3000);
             });
         });
         $('#systemsettings_backuprestores1selectallbtn').bind('click', function () {
@@ -204,7 +219,12 @@ HG.WebApp.Maintenance.InitializePage = function () {
                 });
             }
         });
-        $('#restore_configuration_uploadframe').bind('load', function () {
+        $('#maintenance_configuration_backupbutton').bind('click', function() {
+            window.open(location.protocol + '../../api/HomeAutomation.HomeGenie/Config/System.Configure/System.ConfigurationBackup');
+        });
+        $('#restore_configuration_uploadframe').bind('load', function(evt) {
+            if ($('#restore_configuration_uploadfile').val() == "")
+                return;
             HG.Configure.System.ServiceCall("System.ConfigurationRestoreS1", function (data) {
                 $.mobile.loading('hide');
                 $('#systemsettings_backuprestores1plist').empty();
@@ -224,8 +244,8 @@ HG.WebApp.Maintenance.InitializePage = function () {
                 $('#systemsettings_backuprestores1').popup('open');
             });
             $('#systemsettings_backuprestores1confirmbutton').bind('click', function () {
-            	$('#systemsettings_backuprestores1cancelbutton').addClass('ui-disabled');
-            	$('#systemsettings_backuprestores1confirmbutton').addClass('ui-disabled');
+                $('#systemsettings_backuprestores1cancelbutton').addClass('ui-disabled');
+                $('#systemsettings_backuprestores1confirmbutton').addClass('ui-disabled');
                 $.mobile.loading('show', { text: 'Please be patient, this may take some time...', textVisible: true, theme: 'a', html: '' });
                 HG.Configure.System.ServiceCall("System.ConfigurationRestoreS2/" + HG.WebApp.Maintenance.RestoreProgramList, function (data) {
                     $.mobile.loading('hide');
@@ -235,9 +255,7 @@ HG.WebApp.Maintenance.InitializePage = function () {
         });
         //
         $('#systemsettings_modulesdelete').on('popupbeforeposition', function (event) {
-
             HG.WebApp.Maintenance.RefreshModulesList();
-
         });
         $('#configure_interfaces_modules_list').on('click', 'li', function () {
             $.mobile.loading('show');
@@ -261,7 +279,152 @@ HG.WebApp.Maintenance.InitializePage = function () {
                 $.mobile.loading('hide');
             });
         });
+
+        $('#systemsettings_databasemaxsize_change').bind('click', function () {
+            var sizemb = $('#systemsettings_databasemaxsizechange_size').val();
+            $.mobile.loading('show');
+            HG.System.SetStatisticsDatabaseMaximumSize(sizemb, function (data) {
+                $.mobile.loading('hide');
+                setTimeout(function () {
+                    HG.WebApp.Maintenance.LoadStatisticsSettings();
+                }, 1000);
+            });
+        });
+
+        $('#maintenance_configuration_routingresetbutton').on('click', function() {
+            var message = HG.WebApp.Locales.GetLocaleString('systemsettings_resetroutingdata_warning', 'This operation cannot be undone.');
+            HG.WebApp.Utility.ConfirmPopup(HG.WebApp.Locales.GetLocaleString('systemsettings_resetroutingdata_title', 'Reset routing data?'), message, function(confirmed){
+                if (confirmed) HG.Configure.Modules.RoutingReset();
+            });
+        });
+
+        $('#maintenance_configuration_databaseresetbutton').on('click', function() {
+            var message = HG.WebApp.Locales.GetLocaleString('systemsettings_resetdatabase_warning', 'This operation cannot be undone.');
+            HG.WebApp.Utility.ConfirmPopup(HG.WebApp.Locales.GetLocaleString('systemsettings_resetdatabase_title', 'Reset stats database?'), message, function(confirmed){
+                if (confirmed) HG.Statistics.Database.Reset();
+            });
+        });
+
+        // Add-ons repository browser
+        page.find('[id=systemsettings_browserepo]').on('popupbeforeposition', function (event) {
+            var availHeight = $(window).height()-320;
+            var availWidth = $(window).width();
+            availWidth = availWidth - (availWidth / 5);
+            var contentFiles = page.find('[data-ui-field=browser_files]');
+            if (availWidth > 500) {
+                contentFiles.parent().parent().css('width', availWidth);
+                contentFiles.parent().parent().css('max-width', availWidth);
+            }
+            contentFiles.css('height', availHeight/2);
+            contentFiles.css('max-height', availHeight/2);
+            var contentText = page.find('[data-ui-field=browser_text]');
+            contentText.css('height', availHeight/2);
+            contentText.css('max-height', availHeight/2);
+        }).on('popupafteropen', function (event) {
+            HG.WebApp.Maintenance.BrowseRoot();
+        });
+        page.find('[data-ui-field=parent_folder]').on('click', function() {
+            var browse = HG.WebApp.Maintenance.BrowseRepository;
+            var history = HG.WebApp.Maintenance._BrowserHistory;
+            if (history.length > 1) {
+                history.pop();
+                browse(history.pop());
+            }
+        });
+        page.find('[data-ui-field=install_package]').on('click', function() {
+            page.find('[data-ui-field=install_text]').empty();
+            $.mobile.loading('show');
+            $.get('/' + HG.WebApp.Data.ServiceKey + '/' + HG.WebApp.Data.ServiceDomain + '/Config/Package.Install/' + encodeURIComponent(HG.WebApp.Maintenance._BrowserPackage), function (res) {
+                $.mobile.loading('hide');
+            });
+        });
+        page.find('[data-ui-field=repository_browse]').on('click', function() {
+            HG.WebApp.Maintenance.BrowseRoot();
+        });
     });
+};
+
+HG.WebApp.Maintenance._BrowserHistory = [];
+HG.WebApp.Maintenance._BrowserPackage = '';
+HG.WebApp.Maintenance.BrowseRoot = function() {
+    // reset history and browse to new repo
+    HG.WebApp.Maintenance._BrowserHistory = [];
+    var page = $('#'+HG.WebApp.Maintenance.PageId);
+    HG.WebApp.Maintenance.BrowseRepository({ url: page.find('[data-ui-field=repository_url]').val()+'/packages', name:'' });
+};
+HG.WebApp.Maintenance.BrowseRepository = function(path) {
+    var page = $('#'+HG.WebApp.Maintenance.PageId);
+    var list = page.find('[data-ui-field=repository_files]');
+    var text = page.find('[data-ui-field=description_text]');
+    var info = page.find('[data-ui-field=package_info]');
+    var popup = page.find('[id=systemsettings_browserepo]');
+    var browse = HG.WebApp.Maintenance.BrowseRepository;
+    var history = HG.WebApp.Maintenance._BrowserHistory;
+    history.push(path);
+    // show/hide ui elements as needed
+    if (history.length > 1)
+        page.find('[data-ui-field=parent_folder]').show();
+    else
+        page.find('[data-ui-field=parent_folder]').hide();
+    page.find('[data-ui-field=install_package]').hide();
+    page.find('[data-ui-field=install_text]').empty();
+    text.html('');
+    info.hide();
+    // show current path
+    var cpath = '';
+    $.each(history, function(idx, p){
+        cpath+='<strong>'+p.name+'</strong> / ';
+    });
+    page.find('[data-ui-field=browser_path]').html(cpath);
+    // get current folder files
+    list.empty();
+    $.mobile.loading('show');
+    $.get(path.url, function(data){
+      $.each(data, function(idx,file){
+        if (file.type == 'dir') {
+          var item = $('<li><a href="#" class="ui-btn ui-btn-icon-left ui-icon-fa-folder">'+file.name+'</a></li>');
+          list.append(item);
+          item.on('click', function() {
+            browse({ url: file.url, name: file.name });
+          });
+        } else if (file.name.toLowerCase() == 'package.json') {
+            HG.WebApp.Maintenance._BrowserPackage = file.download_url.substring(0, file.download_url.lastIndexOf('/'));
+            $.get(file.download_url, function(package) {
+                package = $.parseJSON(package);
+                var pkginfo = '<strong>'+package.title+'</strong>';
+                pkginfo += '<br/><strong>Version</strong>: '+package.version;
+                pkginfo += '<br/><strong>Author</strong>: '+package.author;
+                pkginfo += '<br/><strong>Files</strong>: '
+                pkginfo +=  package.programs.length+' automation programs, ';
+                pkginfo +=  package.widgets.length+' ui widgets, ';
+                pkginfo +=  package.interfaces.length+' mig interfaces';
+                pkginfo += '<br/><strong>Published</strong>: '+package.published;
+                pkginfo += '<br/><i class="fa fa-comments fa-md"></i> <a href="'+package.homepage+'" target="_blank">Forum Thread</a><br/>';
+                info.html(pkginfo);
+                info.show();
+                page.find('[data-ui-field=browser_text]').scrollTop(0);
+            });
+            page.find('[data-ui-field=install_package]').show();
+        } else if (file.name.toLowerCase().endsWith('.md')) {
+            $.get(file.download_url, function(readme) {
+                text.html(markdown.toHTML(readme));
+                page.find('[data-ui-field=browser_text]').scrollTop(0);
+            });
+        } else if (file.type == 'file') {
+          var item = $('<li><a href="#" class="ui-btn ui-btn-icon-left ui-icon-fa-file-code-o">'+file.name+'</a></li>');
+          list.append(item);
+          item.on('click', function() {
+            //_this.ListFiles(file.url);
+            //console.log(file);
+          });
+        }
+      });
+      list.listview().listview('refresh');
+      setTimeout(function(){
+        popup.popup().popup('reposition', { positionTo: 'window' });
+        $.mobile.loading('hide');
+      }, 300);
+    }); 
 };
 
 HG.WebApp.Maintenance.RestoreProgramList = '';
@@ -277,30 +440,46 @@ HG.WebApp.Maintenance.RestoreProgramToggle = function (el) {
 HG.WebApp.Maintenance.LoadSettings = function () {
     $.mobile.loading('show');
     //
-    HG.Configure.System.ServiceCall("HttpService.GetPort", function (data) {
-        $('#http_service_port').val(data);
-        $('#systemsettings_httpport_text').html(data);
+    HG.WebApp.Maintenance.LoadUpdateCheckSettings();
+    HG.System.LoggingIsEnabled(function (data) {
+        $('#configure_system_flip_logging').val(data).slider('refresh');
         $.mobile.loading('hide');
     });
-    //
-    HG.WebApp.Maintenance.LoadSecuritySettings();
-    HG.WebApp.Maintenance.LoadUpdateCheckSettings();
+    HG.WebApp.Maintenance.LoadHttpSettings();
+    HG.WebApp.Maintenance.LoadStatisticsSettings();
     //
     $('#configure_system_flip_eventshistory').val(dataStore.get('UI.EventsHistory') ? "1" : "0").slider('refresh');
+    //
+    var temperatureUnit = dataStore.get('UI.TemperatureUnit');
+    $('#tempunit-celsius').prop("checked", false);
+    $('#tempunit-fahrenheit').prop('checked', false);
+    if (temperatureUnit != 'F')
+        $('#tempunit-celsius').prop('checked', true);
+    else
+        $('#tempunit-fahrenheit').prop('checked', true);
+    $("input[name='tempunit-choice']").checkboxradio('refresh');
+    //
+    var dateFormat = dataStore.get('UI.DateFormat');
+    $('#dateformat-dmy').prop("checked", false);
+    $('#dateformat-mdy').prop('checked', false);
+    if (dateFormat != 'MDY12')
+        $('#dateformat-dmy').prop('checked', true);
+    else
+        $('#dateformat-mdy').prop('checked', true);
+    $("input[name='dateformat-choice']").checkboxradio('refresh');
 };
 
 HG.WebApp.Maintenance.LoadUpdateCheckSettings = function () {
     $.mobile.loading('show');
     $('#configure_system_updateinstall_button').addClass('ui-disabled');
-    HG.System.UpdateManager.GetUpdateList(function (data) {
-        var releasedata = eval(data);
+    HG.System.UpdateManager.GetUpdateList(function (releasedata) {
         if (releasedata.length == 0) {
-            $('#configure_system_updatemanager_info').html('No updates available.');
+            $('#configure_system_updatemanager_info').html(HG.WebApp.Locales.GetLocaleString('configure_system_updatemanager_no_updates'));
             $('#configure_system_updatemanager_detailsscroll').hide();
             $('#configure_system_updatemanager_installbutton').hide();
         }
         else {
-            $('#configure_system_updatemanager_info').html('The following updates are available:');
+            $('#configure_system_updatemanager_info').html(HG.WebApp.Locales.GetLocaleString('configure_system_updatemanager_updates_available'));
             var s = '<pre>';
             for (var r = 0; r < releasedata.length; r++) {
                 var relinfo = releasedata[r];
@@ -316,21 +495,36 @@ HG.WebApp.Maintenance.LoadUpdateCheckSettings = function () {
     });
 };
 
-HG.WebApp.Maintenance.LoadSecuritySettings = function () {
+HG.WebApp.Maintenance.LoadHttpSettings = function () {
     $.mobile.loading('show');
     HG.System.HasPassword(function (data) {
-        var sfx = (data == '1' ? 'on' : 'off');
+        var sfx = (data.ResponseValue == '1' ? 'on' : 'off');
         $('#securitysettings_password_image').attr('src', 'images/protection-' + sfx + '.png');
         //
-        HG.System.LoggingIsEnabled(function (data) {
-            $('#configure_system_flip_logging').val(data).slider('refresh');
+        HG.System.WebCacheIsEnabled(function (data) {
+            $('#configure_system_flip_httpcache').val(data == 'true' ? '1' : '0').slider('refresh');
             $.mobile.loading('hide');
         });
         //
-        HG.System.WebCacheIsEnabled(function (data) {
-            $('#configure_system_flip_httpcache').val(data).slider('refresh');
+        HG.Configure.System.ServiceCall("HttpService.GetPort", function (data) {
+            $('#http_service_port').val(data);
+            $('#systemsettings_httpport_text').html(data);
             $.mobile.loading('hide');
         });
+        HG.Configure.System.ServiceCall("HttpService.GetHostHeader", function (data) {
+           $('#http_host_header').val(data);
+           $('#systemsettings_hostheader_text').html(data);
+           $.mobile.loading('hide');
+        });
+    });
+};
+
+HG.WebApp.Maintenance.LoadStatisticsSettings = function () {
+    $.mobile.loading('show');
+    HG.Configure.System.ServiceCall("Statistics.GetStatisticsDatabaseMaximumSize", function (data) {
+        $('#systemsettings_databasemaxsizechange_size').val(data);
+        $('#systemsettings_databasemaxsize_text').html(data);
+        $.mobile.loading('hide');
     });
 };
 
@@ -347,10 +541,10 @@ HG.WebApp.Maintenance.RefreshModulesList = function () {
             cdomain = mod.Domain;
         }
         $('#configure_interfaces_modules_list').append($('<li/>', { 'data-icon': 'minus', 'data-context-domain': mod.Domain, 'data-context-address': mod.Address })
-			.append($('<a/>',
-				{
-				    'text': mod.Address + ' ' + mod.Name
-				})));
+            .append($('<a/>',
+                {
+                    'text': mod.Address + ' ' + mod.Name
+                })));
     }
     cdomain = '';
     for (var m = 0; m < HG.WebApp.Data.Modules.length; m++) {
@@ -363,10 +557,10 @@ HG.WebApp.Maintenance.RefreshModulesList = function () {
             cdomain = mod.Domain;
         }
         $('#configure_interfaces_modules_list').append($('<li/>', { 'data-icon': 'minus', 'data-context-domain': mod.Domain, 'data-context-address': mod.Address })
-			.append($('<a/>',
-				{
-				    'text': mod.Address + ' ' + mod.Name
-				})));
+            .append($('<a/>',
+                {
+                    'text': mod.Address + ' ' + mod.Name
+                })));
     }
     $('#configure_interfaces_modules_list').listview('refresh');
 };

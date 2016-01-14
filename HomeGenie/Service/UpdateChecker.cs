@@ -27,8 +27,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.IO.Packaging;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -40,11 +38,11 @@ namespace HomeGenie.Service
     [Serializable]
     public class ReleaseInfo
     {
-        public string Name;
-        public string Version;
-        public string Description;
-        public string ReleaseNote;
-        public DateTime ReleaseDate;
+        public string Name { get; set; }
+        public string Version { get; set; }
+        public string Description { get; set; }
+        public string ReleaseNote { get; set; }
+        public DateTime ReleaseDate { get; set; }
         public string DownloadUrl;
         public bool RequireRestart;
         public bool UpdateBreak;
@@ -98,7 +96,7 @@ namespace HomeGenie.Service
         public delegate void InstallProgressMessageEvent(object sender, string message);
         public InstallProgressMessageEvent InstallProgressMessage;
 
-        private string endpointUrl = "http://www.homegenie.it/release_updates.php";
+        private string endpointUrl = "http://www.homegenie.it/release_updates_v1_1.php";
         private ReleaseInfo currentRelease;
         private List<ReleaseInfo> remoteUpdates;
         private Timer checkInterval;
@@ -165,28 +163,40 @@ namespace HomeGenie.Service
 
         public List<ReleaseInfo> GetRemoteUpdates()
         {
-            var client = new WebClient();
-            client.Headers.Add("user-agent", "HomeGenieUpdater/1.0 (compatible; MSIE 7.0; Windows NT 6.0)");
-            try
+            using (var client = new WebClient())
             {
-                string releaseXml = client.DownloadString(endpointUrl);
-                var serializer = new XmlSerializer(typeof(List<ReleaseInfo>));
-                using (TextReader reader = new StringReader(releaseXml))
+                client.Headers.Add("user-agent", "HomeGenieUpdater/1.0 (compatible; MSIE 7.0; Windows NT 6.0)");
+                try
                 {
-                    remoteUpdates.Clear();
-                    var updates = (List<ReleaseInfo>)serializer.Deserialize(reader);
-                    updates.Sort(delegate(ReleaseInfo a, ReleaseInfo b) { return a.ReleaseDate.CompareTo(b.ReleaseDate); });
-                    foreach (var releaseInfo in updates)
+                    string releaseXml = client.DownloadString(endpointUrl);
+                    var serializer = new XmlSerializer(typeof(List<ReleaseInfo>));
+                    using (TextReader reader = new StringReader(releaseXml))
                     {
-                        if (currentRelease != null && currentRelease.ReleaseDate < releaseInfo.ReleaseDate)
+                        remoteUpdates.Clear();
+                        var updates = (List<ReleaseInfo>)serializer.Deserialize(reader);
+                        updates.Sort(delegate(ReleaseInfo a, ReleaseInfo b)
                         {
-                            remoteUpdates.Add(releaseInfo);
-                            if (releaseInfo.UpdateBreak) break;
+                            return a.ReleaseDate.CompareTo(b.ReleaseDate);
+                        });
+                        foreach (var releaseInfo in updates)
+                        {
+                            if (currentRelease != null && currentRelease.ReleaseDate < releaseInfo.ReleaseDate)
+                            {
+                                remoteUpdates.Add(releaseInfo);
+                                if (releaseInfo.UpdateBreak)
+                                    break;
+                            }
                         }
                     }
                 }
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    client.Dispose();
+                }
             }
-            catch (Exception) { }
             return remoteUpdates;
         }
 
@@ -248,58 +258,33 @@ namespace HomeGenie.Service
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(archiveName));
             }
-            var client = new WebClient();
-            client.Headers.Add("user-agent", "HomeGenieUpdater/1.0 (compatible; MSIE 7.0; Windows NT 6.0)");
-            try
+            using (var client = new WebClient())
             {
-                client.DownloadFile(releaseInfo.DownloadUrl, archiveName);
-            }
-            catch (Exception)
-            {
-                if (ArchiveDownloadUpdate != null) ArchiveDownloadUpdate(this, new ArchiveDownloadEventArgs(releaseInfo, ArchiveDownloadStatus.ERROR));
-                return null;
-                //                throw;
+                client.Headers.Add("user-agent", "HomeGenieUpdater/1.0 (compatible; MSIE 7.0; Windows NT 6.0)");
+                try
+                {
+                    client.DownloadFile(releaseInfo.DownloadUrl, archiveName);
+                }
+                catch (Exception)
+                {
+                    if (ArchiveDownloadUpdate != null)
+                        ArchiveDownloadUpdate(this, new ArchiveDownloadEventArgs(releaseInfo, ArchiveDownloadStatus.ERROR));
+                    return null;
+                    //                throw;
+                }
+                finally
+                {
+                    client.Dispose();
+                }
             }
 
             // Unarchive (unzip)
-            if (ArchiveDownloadUpdate != null) ArchiveDownloadUpdate(this, new ArchiveDownloadEventArgs(releaseInfo, ArchiveDownloadStatus.DECOMPRESSING));
+            if (ArchiveDownloadUpdate != null)
+                ArchiveDownloadUpdate(this, new ArchiveDownloadEventArgs(releaseInfo, ArchiveDownloadStatus.DECOMPRESSING));
 
             bool errorOccurred = false;
-            var files = new List<string>();
-            try
-            {
-                using (ZipPackage package = (ZipPackage)Package.Open(archiveName, FileMode.Open, FileAccess.Read))
-                {
-                    foreach (PackagePart part in package.GetParts())
-                    {
-                        string target = Path.Combine(destinationFolder, part.Uri.OriginalString.Substring(1)).TrimStart(Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()).ToArray()).TrimStart('/');
-                        if (!Directory.Exists(Path.GetDirectoryName(target)))
-                        {
-                            Directory.CreateDirectory(Path.GetDirectoryName(target));
-                        }
-
-                        if (File.Exists(target)) File.Delete(target);
-
-                        using (Stream source = part.GetStream(
-                            FileMode.Open, FileAccess.Read))
-                        using (Stream destination = File.OpenWrite(target))
-                        {
-                            byte[] buffer = new byte[4096];
-                            int read;
-                            while ((read = source.Read(buffer, 0, buffer.Length)) > 0)
-                            {
-                                destination.Write(buffer, 0, read);
-                            }
-                        }
-                        files.Add(target);
-                        //Console.WriteLine("Deflated {0}", target);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                errorOccurred = true;
-            }
+            var files = Utility.UncompressZip(archiveName, destinationFolder);
+            errorOccurred = (files.Count == 0);
 
             if (ArchiveDownloadUpdate != null)
             {
@@ -317,11 +302,7 @@ namespace HomeGenie.Service
             bool success = true;
 
             string oldFilesPath = Path.Combine("_update", "oldfiles");
-            if (Directory.Exists(oldFilesPath))
-            {
-                Directory.Delete(oldFilesPath, true);
-            }
-            Directory.CreateDirectory(oldFilesPath);
+            Utility.FolderCleanUp(oldFilesPath);
             if (Directory.Exists(Path.Combine("_update", "files", "HomeGenie")))
             {
                 LogMessage("= Copying new files...");
@@ -329,9 +310,12 @@ namespace HomeGenie.Service
                 {
                     bool doNotCopy = false;
 
-                    string destinationFolder = Path.GetDirectoryName(file).Replace(Path.Combine("_update", "files", "HomeGenie"), "");
-                    if (destinationFolder != "" && !Directory.Exists(destinationFolder)) Directory.CreateDirectory(destinationFolder);
-                    string destinationFile = Path.Combine(destinationFolder, Path.GetFileName(file)).TrimStart(Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()).ToArray()).TrimStart('/');
+                    string destinationFolder = Path.GetDirectoryName(file).Replace(Path.Combine("_update", "files", "HomeGenie"), "").TrimStart('/').TrimStart('\\');
+                    if (!String.IsNullOrWhiteSpace(destinationFolder) && !Directory.Exists(destinationFolder))
+                    {
+                        Directory.CreateDirectory(destinationFolder);
+                    }
+                    string destinationFile = Path.Combine(destinationFolder, Path.GetFileName(file)).TrimStart(Directory.GetDirectoryRoot(Directory.GetCurrentDirectory()).ToArray()).TrimStart('/').TrimStart('\\');
 
                     // backup current file before replacing it
                     if (File.Exists(destinationFile))
@@ -394,11 +378,10 @@ namespace HomeGenie.Service
 
                     if (!doNotCopy)
                     {
-                        Console.WriteLine("+ " + destinationFile);
                         try
                         {
                             LogMessage("+ Copying file '" + destinationFile + "'");
-                            if (!Directory.Exists(Path.GetDirectoryName(destinationFile)))
+                            if (!String.IsNullOrWhiteSpace(Path.GetDirectoryName(destinationFile)) && !Directory.Exists(Path.GetDirectoryName(destinationFile)))
                             {
                                 try
                                 {
@@ -565,10 +548,10 @@ namespace HomeGenie.Service
                 bool configChanged = false;
                 foreach (var item in schedulerItems)
                 {
-                    if (homegenie.ProgramEngine.SchedulerService.Get(item.Name) == null)
+                    if (homegenie.ProgramManager.SchedulerService.Get(item.Name) == null)
                     {
                         LogMessage("+ Adding Scheduler Item: " + item.Name);
-                        homegenie.ProgramEngine.SchedulerService.AddOrUpdate(item.Name, item.CronExpression);
+                        homegenie.ProgramManager.SchedulerService.AddOrUpdate(item.Name, item.CronExpression);
                         if (!configChanged) configChanged = true;
                     }
                 }
@@ -602,12 +585,12 @@ namespace HomeGenie.Service
                 var config = (SystemConfiguration)serializer.Deserialize(reader);
                 //
                 bool configChanged = false;
-                foreach (var iface in config.MIGService.Interfaces)
+                foreach (var iface in config.MigService.Interfaces)
                 {
-                    if (homegenie.SystemConfiguration.MIGService.GetInterface(iface.Domain) == null)
+                    if (homegenie.SystemConfiguration.MigService.GetInterface(iface.Domain) == null)
                     {
                         LogMessage("+ Adding MIG Interface: " + iface.Domain);
-                        homegenie.SystemConfiguration.MIGService.Interfaces.Add(iface);
+                        homegenie.SystemConfiguration.MigService.Interfaces.Add(iface);
                         if (!configChanged) configChanged = true;
                     }
                 }
@@ -645,9 +628,9 @@ namespace HomeGenie.Service
                     {
 
                         // Only system programs are to be updated
-                        if (program.Address < ProgramEngine.USER_SPACE_PROGRAMS_START)
+                        if (program.Address < ProgramManager.USER_SPACE_PROGRAMS_START)
                         {
-                            ProgramBlock oldProgram = homegenie.ProgramEngine.Programs.Find(p => p.Address == program.Address);
+                            ProgramBlock oldProgram = homegenie.ProgramManager.Programs.Find(p => p.Address == program.Address);
                             if (oldProgram != null)
                             {
 
@@ -658,7 +641,7 @@ namespace HomeGenie.Service
                                 // Preserve IsEnabled status if program already exist
                                 program.IsEnabled = oldProgram.IsEnabled;
                                 LogMessage("* Updating Automation Program: " + program.Name + " (" + program.Address + ")");
-                                homegenie.ProgramEngine.ProgramRemove(oldProgram);
+                                homegenie.ProgramManager.ProgramRemove(oldProgram);
 
                             }
                             else
@@ -666,15 +649,31 @@ namespace HomeGenie.Service
                                 LogMessage("+ Adding Automation Program: " + program.Name + " (" + program.Address + ")");
                             }
 
-                            // Try copying the new compiled program binary dll
+                            // Try copying the new program files (binary dll or arduino sketch files)
                             try
                             {
-                                File.Copy(Path.Combine(UpdateBaseFolder, "programs", program.Address + ".dll"), Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "programs", program.Address + ".dll"), true);
+                                if (program.Type.ToLower() == "csharp")
+                                {
+                                    File.Copy(Path.Combine(UpdateBaseFolder, "programs", program.Address + ".dll"), Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "programs", program.Address + ".dll"), true);
+                                }
+                                else if (program.Type.ToLower() == "arduino")
+                                {
+                                    // copy arduino project files...
+                                    // TODO: this is untested yet
+                                    string sourceFolder = Path.Combine(UpdateBaseFolder, "programs", "arduino", program.Address.ToString());
+                                    string arduinoFolder = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "programs", "arduino", program.Address.ToString());
+                                    Utility.FolderCleanUp(arduinoFolder);
+                                    foreach (string newPath in Directory.GetFiles(sourceFolder))
+                                    {
+                                        File.Copy(newPath, newPath.Replace(sourceFolder, arduinoFolder), true);
+                                        LogMessage("* Updating Automation Program: " + program.Name + " (" + program.Address + ") - " + Path.GetFileName(newPath));
+                                    }
+                                }
                             }
                             catch { }
 
                             // Add the new program to the ProgramEngine
-                            homegenie.ProgramEngine.ProgramAdd(program);
+                            homegenie.ProgramManager.ProgramAdd(program);
 
                             if (!configChanged) configChanged = true;
                         }

@@ -1,5 +1,494 @@
 ﻿RELEASE HISTORY
 
+14/01/2016 v1.1-beta.513-wip
+    - Added Package Browser and Installer to the Maintenance page (wip)
+    - Fixed occasional "object reference not set" error when compiling/starting a program
+    - Added recursion check to scheduler event expressions
+    - Fixed bug in evaluating composite scheduler events using names (@)
+
+10/01/2016 v1.1-beta.512
+    - Energy Monitor widget now shows Watt load graph as default
+    - Updated Russian and French locales
+    - Improved crontab input field with autocomplete
+    - Updated compression library (latest HEAD SharpZipLib from master repo)
+
+06/01/2016 v1.1-beta.511
+    - Fix archive compression "codepage not supported" bug introduced in r510
+    - Fix heavy cpu load bug introduced in r510
+    - Fix TimeTable time offset bug introduced in r510
+    - Faaaster archive compression/decompression using SharpZipLib
+    - Improved TimeTable to support CronTab expressions for program Disable/AutoOff options
+
+02/01/2016 v1.1-beta.509a
+    - Fix TimeTable occasional desync/event loosing on slower systems
+
+01/01/2016 v1.1-beta.509
+    - Added 'Zone Sensors' program; group multiple sensors into one logical sensor
+    - Added 'Automatic Off' options to TimeTable programs (when armed home/away or no motion activity detected)
+    - Updated Z-Wave device database (pepper1)
+    - Updated RaspberrySharp-IO libraries
+    - Little UI rework and improvements
+    - Fix to Timetable widget 'today events' bug
+
+23/12/2015 v1.1-beta.508a
+    - Fix to Timetable widget data refresh issue
+
+22/12/2015 v1.1-beta.508
+    - Improved 'Smart Lights' app now with synch to Timetable option
+    - Improved 'Timetable' app and widget with full screen options page
+    - Other minor UI improvements and fixes
+    - Added "Add to home screen" option for Android devices for opening Web UI full screen from the Android home screen
+    - Control page layout now centering each row
+
+13/12/2015 v1.1-beta.507
+    - Added "Set node as always awake" option to Z-Wave Query on WakeUp program
+    - Improved startup/trigger code check, now executing on every system event to ensure maximum accuracy even with Wizard scripts
+    - Fix wizard script "Scheduler.CronEvent" condition not working
+
+11/12/2015 v1.1-beta.506
+    - Fix Interface Add-On install bug (it was removing all other interfaces when installing a new one)
+    - Should fix occasional null reference exception in ValueStatistics.AddValue
+
+04/12/2015 v1.1-beta.505
+    - Updated Z-Wave Level Poll program to support SwitchBinary/MultiLevel command classes
+    - Fixed XTenLib CM11 bug
+    - Fixed issue in FibaroRGBW app
+    - Added ":nopopup:" option to disable notification popup on RaiseEvent (":nopopup:" must be specified in the description field)
+    - Fixed "Program.UiRefresh" event, that was working only for program modules
+    - Fixed ZWaveLib SwitchBinary command class (sending 0x20 Basic instead of 0x25 SwitchBinary)
+
+28/11/2015 v1.1-beta.504
+    - Added Z-Wave "Send to sleep" option to "Query on Wake Up" program
+    - Added SendToSleep command after each WakeUp query for battery powered device
+    - Added custom serial port path selector for various serial interfaces (z-wave, x10, w800rf, insteon)
+    - Updated FibaroRGBW app
+    - Fixed ZWaveLib packet fragmentation issue (affecting RaZberry) and timeout errors occurring with some devices (eg. Fibaro in wall switches)
+    - Fixed "event stream disconnected" issue occurring on some mono-arm platforms
+    - Removed 20 seconds pause after backup restore/factory reset
+    - Fix modules serialization bug (backslash character not escaped)
+
+24/11/2015 v1.1-beta.503
+    - Fix to system update manager not refreshing page after update or backup restore
+    - Fix ZWave device setup page timeout error when getting parameters
+    - Fix accented character encoding issue
+
+18/11/2015 v1.1-beta.501
+    - Added UPnP AvMedia.Seek command
+    - Added configurable command delay and heal network options to ZWave interface
+    - Fix blocking event propagation. Events are now processed asynchronously (also solves issue #237)
+    - Fix Security Alarm program events propagation issue
+    - Fixed Media Server browser widget not listing/linking files encoded in one format only; fixed also issues with XBMC and Kodi media player
+
+05/11/2015 v1.1-beta.500
+    - Fixed ZWave interface sensor timeout bug and sensor Status.Level "0.01" bug
+    - Disabled limit of max one opened http connection per program in NetHelper
+    - Improved media server widget with thumbnails and support for multiple bitrates and formats
+    - Added UPnP interface command "AvMedia.GetItem"
+    - Improved camera widget
+    - Fixed 'continuous Event Stream disconnection' bug when running on old mono ARM-hf (eg. Raspberry Pi)
+    - Updated Spanish locales
+    - Disabled periodic Weather Underground program notifications in the UI
+    - Reverted XTenLib to the using of Thread instead of Task
+
+28/10/2015 v1.1-beta.499
+    - Fixed SerialPortLib threading issues
+    - Added ZWaveLib node error status report- Fixed bug in Program Manager not releasing resources when disabling/stopping C-Sharp programs
+    - Added temperature unit and date format preference in the maintenance/ui settings page
+    - Fixed TcpClient helper class that was not releasing resources on disconnect/reconnect
+    - Added "Siren start delay" option to Security Alarm program
+    - Brand new style and features for dashboard widgets
+    - Added timetable program picker (module options dialog)
+
+20/10/2015 v1.1-beta.498
+    - Fixed MIG-Protocols-UPnP interface not releasing allocated SSDP resources
+    - Added to ZWaveLib message resend on node wake-up; fixed i/o synchronization issues in MIG ZWave interface
+    - Updated Pepper1 ZWave database
+    - Fixed HG/Web hang problem after certain number of connections not properly closed by remote clients (Too many open files)
+    - Added arm Home/Away modes to Security Alarm System app
+    - Reintroduced logging to file (SystemLogger)
+    - Fixed HTTP authentication issue when running HG on Windows (#230)
+    - Fixed Settings->Add-On Install bug (PR #231)
+
+10/10/2015 v1.1-beta.497
+    - Enhanced parameter statistics now holding up to 1 day of history (HistoryLimit is now expressed in minutes)
+    - Fixed duplicated event raising causing also issues with History/Statistics (#228)
+    - Added new API command /api/HomeAutomation.HomeGenie/Config/Modules.StatisticsGet/<domain>/<address>/<parameter>
+    - Added new API command /api/HomeAutomation.HomeGenie/Config/Modules.ParameterGet/<domain>/<address>/<parameter> (should close issue #206)
+    - Optimized SSE
+
+20/09/2015 v1.1-beta.496
+    - Integrated new MIG library https://github.com/genielabs/mig-service-dotnet
+    - General speed and performance improvements
+    - Now logging through NLog library
+    - Updated all automation programs to use latest API
+    - Fixed HG configuration saving issue (not storing interface options)
+    - ZWaveLib: added caching and persistence of nodes data to zwavenodes.xml file
+    - ZWaveLib Discovery: added querying of nodes capbilities, NIF, Manufacturer Specs, Version during discovery process
+
+08/09/2015 v1.1-beta.494
+    - Deprecated Program.Setup and mandatory use of return statement in Trigger Code (now called Startup Code)
+    - Integrated new MIG library https://github.com/genielabs/mig-service-dotnet
+    - General speed and performance improvements
+    - Now logging through NLog library
+    - Updated all automation programs to use latest API
+
+26/08/2015 v1.00-beta.493-p4
+    - Fixed HG configuration saving issue (not storing interface options)
+    - ZWaveLib: added caching and persistence of nodes data to zwavenodes.xml file
+    - ZWaveLib Discovery: added querying of nodes capbilities, NIF, Manufacturer Specs, Version during discovery process
+    - Deprecated SC9000 security alarm program
+    - X10 CM-15, W800RF32: added RF security codes decoding and automatic modules creation from X10-RF
+    - Updated MIG to use latest automation libs (ZWaveLib, XTenLib, W800RfLib) and features
+
+13/08/2015 v1.00-beta.493-p3
+    - ZWave: added Heal Node / Routing Info functionality
+    - Added support for serial ports types ttyAMAx and ttyACMx (RaZberry / ZME_UZB1) - PR #194
+    - Some minor improvements to "Weather Underground" and "Query on Wake Up" programs - PR #190 PR #193
+    - Improved statistics delete functionality - PR #200
+
+30/07/2015 v1.00-beta.493-p2
+    - Changed behaviour of When.ModuleParameterIsChanging: event values can now be changed/adjusted before they are commited into the system
+    - Added "Days" parameter for viewing statistics graph along several days (PR #189)
+
+25/06/2015 v1.00-beta.493-p1
+    - Fix for AeonLabs HEM G2 (PR #186)
+    - Added Host Header configuration (adapted from pull request #163)
+    - Added "IR Remote Controller" automation program plugin (contributed by amin)
+    - Added feature field of type "capture" (init as "capture:<parameter_to_capture>")
+
+15/06/2015 v1.00-beta.493
+    - Updated HomeGenie Mac solution files to compile/run latest HG
+    - Fix Philips Hue bridge app level bug
+    - Widgets restyling (homegenie/generic): dimmer,light,switch,siren,colorlight
+    - Some lil UI fixing
+
+12/06/2015 v1.00-beta.492-p1
+    - Removed deprecated html pages
+    - Fixed possible memory leak both in Net Helper HTTP and SMTP clients
+    - Fixed "DiscoveryLog" javascript error
+
+08/06/2015 1.00 beta rev 492
+    - Added customizable wallpapers to control groups
+    - Fixed group separator add/remove bug
+    - Fixed colorlight widget rgb/hsb color conversion bug
+
+01/06/2015 1.00 beta rev 491-p1
+    - Fix to minor issues of the new UI
+
+31/05/2015 1.00 beta rev 491-git1
+    - Fixed issue #134 (cost per unit not saved)
+    - Improved Sensor widget (PR #174)
+
+30/05/2015 1.00 beta rev 491
+    - Restyled UI navigation. Added side menu (opens by clicking the upper left HomeGenie button)
+    - Improved Switch and Shutter widgets (PR #172 #173)
+    - Fixed Statistics Engine bug with parsing/passing wrong timerange values
+
+27/05/2015 1.00 beta rev 489
+    - Fixed CSharp app compile bug (Windows)
+
+10/05/2015 1.00 beta rev 484-git9 (r488 preview)
+    - Added localization of programs configuration options
+
+09/05/2015 1.00 beta rev 484-git8
+    - Added localization of module features and programs title/description
+    - Added postback call to automation programs when a module option/feature is changed from the UI
+
+08/05/2015 1.00 beta rev 484-git7 (487 preview)
+    - Added missing locale translation entries to locale files
+    - Added Cron event wizard and cron event input widget available as AddFeature "cron.text" field type
+
+05/05/2015 1.00 beta rev 484-git6
+    - Added confirm popup for "database reset" and "remote routing reset"
+    - Updated automation programs to use new Program.AddFeature widgets
+    - Added UI widgets for fields created with Program.AddFeature (last method parameter is the type: "text", "slider", "password", "checkbox", "module.text", "store.script", "store.list")
+    - Added simple store to Module helper too
+    - Added simple key/value persistent store to Program helper class: Program.Store("<store_name>")[.Get("<item_key>") | .Remove("<item_key>") | .List]
+    - Fixed encoding bug in input text of module features and program config options (not handling properly double quotes and other characters)
+    - Added "Description" field to MIGServiceConfiguration.Interface
+    - Added Sunrise/Sunset event raising to Weather Underground app
+    - Updated Jint: javascript engine now accepting "camelCase" convention for invoking Helper Classes
+
+30/04/2015 1.00 beta rev 484-git5
+    - Updated Pepper1 Z-Wave database
+    - MIG Interface driver add-ons can also be installed by entering the add-on package URL
+    - Program.Say will now use Pico TTS if installed in the system, otherwise Google Speech API
+
+20/04/2015 1.00 beta rev 484-git4
+    - Improved MQTT client app
+    - Improved unhandled exceptions trapping/recovery
+    - Fixed bug in app module creation
+    - Added "Console.Output" to the event log page
+
+19/04/2015 1.00 beta rev 484-git3
+    - Added redirection of standard output/error to HG log file
+    - Fixed bug in ZWaveLib that was causing the creation of non-existent nodes
+
+16/04/2015 1.00 beta rev 484-git2
+    - Added pause to ModuleParameter.WaitUpdate loop
+    - Some minor fixes to the UI
+    - Fixed bug in modules cleanup (not deleting modules sometime)
+
+15/04/2015 1.00 beta rev 484-git1
+    - Fixed MQTT app: it was missing reconnection when disconnected from MQTT server
+    - Deprecated Weeco 4M board interface driver as built-in (now available as importable interface driver)
+    - Added importable MIG interface driver plugins
+    - Added "configlets" files for implementing custom interface drivers UI
+
+29/03/2015 1.00 beta rev 484
+    - Improved trigger condition reaction time in all type of programs/scripts (now real time, event based)
+    - Added Program.WithAddress (get reference to a program) and Program.WaitFor (wait for a program to run) to Program helper class
+    - Added Program.Say (voice output) and Program.Play (play wav sound) to Wizard Script HomeGenie/Automation commands
+    - Some fixes to Virtual Modules lifecycle
+    - Added MCP3008 Numeric Keypad automation program (connect a 3x4 numeric keypad using just one analog channel)
+    - Updated SSD1306 Oled, DHT-11 and DHT-22 programs
+    - Improved MCP3008 program with Web API
+    - Added GetValue method to ModulesManager: execute a module command and gets the return value as result (can be used for interprocess communication)
+    - Added database index as suggested by issue #150
+
+20/03/2015 1.00 beta rev 483-git2
+    - Updated raspberrysharp-io library to latest release
+    - Fixed Program.Say bug with accented characters
+    - Added ZWaveLib Crc16Encapsulated decoding support + some more ZWaveLib rework (PR #146 #147 #148)
+
+10/03/2015 1.00 beta rev 483-git1
+    - Added runtime errors debugging for C#, Ruby, Python programs
+    - Added Polish locale files
+
+08/03/2015 1.00 beta rev 483
+    - Updated Jint (javascript engine) to latest version
+    - Applied alternative solution for issue #138 / pull request #141
+    - Fixed device type retain for virtual modules
+    - Added X10 Firecracker Modules app
+    - Fixed missing resource releasing on stop for phyton/ruby/js programs
+    - Fixed W800RF32 port selection issue
+
+01/03/2015 1.00 beta rev 482
+    - Updated RaspberrySharp-IO, now with support for PiFace Digital and MCP3002
+    - Improved Widget Editor reporting of javascript syntax errors to work with any web browser
+
+26/02/2015 1.00 beta rev 479-git6 (r480 preview-4)
+    - Added new locale strings
+    - Minor fixes and improvements to Widget Editor
+    - Added check for changes before leaving Widget Editor page
+    - Added "Add Widget" functionality to Widget Editor
+    - Moved Widget Editor to the Automation section actions menu
+
+24/02/2015 1.00 beta rev 479-git6 (r480 preview-3)
+    - Fixed raspberrysharp-io I2C driver on Raspberry Pi 2 (thanks Wibo! =))
+
+23/02/2015 1.00 beta rev 479-git5 (r480 preview-2)
+    - Added KNX device modules app
+    - Added KnxClientHelper KNX client helper class
+    - Added new MqttClientHelper class (will deprecate Net.Mqtt)
+
+21/02/2015 1.00 beta rev 479-git4 (r480 preview-1)
+    - Added new Widgets Editor with save, export, import, preview and debug functionalities
+    - Updated RaspberrySharp-IO library to possibly support new Raspberry Pi 2 model (issue #133)
+    - Some minor fixes to Z-Wave interface
+    - General improvements to integrated code editor
+    - Added some synchronization locks to NetHelper class to avoid unsafe thread operations
+    - Changed domain of CubieBoard GPIO app from "Raspberry" to "CubieBoard"
+
+16/02/2015 1.00 beta rev 479-git3
+    - Deprecated ExtractTemperatureFromBytes, fixed issue #129
+    - Added parameter path instance suffix to energy values (MIG ZWave interface)
+    - Fixed "Module exception data" issue #127
+    - Fixed missing Y axis in statistics graph (issue #123)
+    - ZWaveLib rework - phase 1 completed (also solve issue #118)
+
+14/02/2015 1.00 beta rev 479    
+    - Fixed bug in Statistics class when parsing address of remote modules
+    - Fixed MIG UPnP interface MediaMediaInfo/MediaPositionInfo double quotes escaping issue
+    - Fixed MIG CameraInput interface not reading configuration
+
+08/02/2015 1.00 beta rev 478
+    - Fixed bug in Timetable when crossing from one table type to another on midnight (eg. from Weekday to Weekend)
+    - Added user-definable thermostat parameter to Eden Oled Menu widget
+    - Improved Basic Thermostat app, now compatible with Timetable scheduler and using Virtual Modules
+    - Added 0.5 step value input to the thermostat widget dial knob (issue #93)
+
+07/02/2015 1.00 beta rev 476-git7 (sf.net r477)
+    - Should fix bug in ZWaveLib Thermostat.SetPointSet (encoding of setpoint value)
+    - Added ZWave message queuing for nodes supporting Wake Up command class (battery powered devices - issue #77)
+    - Fixed bug in HG.WebApp.Statistics.InitConfiguration that was being called prior that statistics page was open
+    - Fixed bug in MigInterfaceCommand options parsing, that was affecting Statistics/Parameter.StatsHour when a module domain/address filter was passed
+    - Fixed IP Camera widget preview not showing
+
+07/02/2015 1.00 beta rev 476-git6
+    - Added missing Z-Wave command classes to _nodesetup.js
+    - Fixed Thermostat.SetPointSet to accept decimal temperature values istead of integers only
+    - Some more ZWaveLib code cleanup
+    - Added new data-locale-ids to locale files
+
+06/02/2015 1.00 beta rev 476-git4
+    - Trying to fix precision/scale/size in value sent by Thermostat.SetPointSet
+    - Fixed temperature reading Fahrenheit/Celsius conversion bug in ZWaveLib when value precision == 2
+    - Added thermostats settings query to Z-Wave WakeUp app
+    - Trying to fix Thermostat.SetPointGet and WakeUp app
+
+05/02/2015 1.00 beta rev 476
+    - Added HTTP post data handling for dynamic web service handlers
+    - Fixed bug in Net.SendMail also affecting Security Alarm System app (issue #88)
+    - Optimized DLNA/UPnP MIG interface driver
+    - Fixed web service call handling in jkUtils OpenWeatherMap and SolarAltitude apps
+    - Fixed bug in error reporting for Javascript automation programs
+    - Improved Statistics section with new UI and date range selection (issue #17)
+    - Added tooltips to graphs
+    - Minor improvements to popup notifications blocking functionality (issue #46)
+
+02/02/2015 1.00 beta rev 475
+    - Added event popups ignore list (issue #46)
+    - Fixed some bugs in js/api web service calls (introduced with r474 js/api refactoring)
+    - Improved Media Renderer widget
+    - Fixed some bugs in UPnP MIG interface (not disposing objects when disabled; not setting device type to MediaTransmitter for media browser nodes)
+    - Removed all System.Windows.Forms and System.Drawing references from UPnP library (hopefully making it more stable)
+
+31/01/2015 1.00 beta rev 474
+    - Fixed synchronization issue in controlling modules (InterfaceControl) that could have caused commands not being executed if performed too fastly
+    - Fixed bug in Timetable (not peforming actions on level changes)
+    - Fixed occasional Ajax network error occurring on IE
+    - Added zoom/panning to statistic graphs
+
+30/01/2015 1.00 beta rev 473
+    - Added forecast info to Weather Underground widget
+
+29/01/2015 1.00 beta rev 471
+    - Completed new Timetable app
+    - Fixed security widget slider size
+
+28/01/2015 1.00 beta rev 469
+    - Added X10 CM15 RF messages decoding
+    - Added new Timetable widget (work in progress)
+    - Deprecated old Timetable widget
+    - Fixed bug in ZWaveLib Basic Report command (bug introduced with latest refactoring)
+    - Fixed bug in RegisterDynamicApiCall
+
+25/01/2015 1.00 beta rev 466
+    - Fixed bug in ZWaveLib Basic Set command (bug introduced with latest refactoring)
+    - Added timetable widget to default dashboard
+    - Merged pull request #109 + pull request #110 (DaniMail time table/thermostat)
+    - Improved Energy Monitor app; added Energy Monitor widget to default dashboard
+
+24/01/2015 1.00 beta rev 462
+    - WIP Time Tables 
+    - Fixed error in localization functions when widget has no control popup defined
+    - Updated Pepper1 Z-Wave device database
+
+21/01/2015 1.00 beta rev 461
+    - Integrating DaniMail Thermostat, Calendar and Time tables (pull request #101) - WIP
+    - Added logic operator "OR" to Wizard script conditions
+    - Improved Z-Wave 'add node' function
+    - Fixed hidden automation groups bug
+
+20/01/2015 1.00 beta rev 459
+    - Removed some old unused files/projects from HG solution
+    - Little improvement to Scheduled ON/OFF program
+    - Added I2C PCF8574 + Hd44780 LCD display example app (Raspberry Pi)
+    - Improved Raspberry Pi GPIO Modules program by adding !OUT option for inverted level logic (pull request #99)
+
+18/01/2015 1.00 beta rev 458
+    - Fixed missing X10, Z-Wave automation groups (bug from r457)
+    - Added Z-Wave Meter Poll app; fixed bug in Level Poll app
+    - Optimized file GPIO connection driver for faaaster I/O operationss
+    - Added "fuzzyness" to Virtual Meter
+    - Added Meter box to Z-Wave node setup page
+    - Major ZWaveLib refactoring, now supporting kWh, KVAh, Watt, Pulses, AC Volt, AC Current and Power Factor energy values (issue #21)
+
+17/01/2015 1.00 beta rev 457
+    - Added CubieTruck/CB3 GPIO app with 30 modules-mapped GPIOs
+    - Fixed possible loop in ZWaveLib Controller.cs when querying node's capabilities
+    - Fixed parameters not updating (bug introduced in r455)
+    - Fixed gpio folder name lookup in raspberry-sharp-io (CubieTruck/CB3)
+
+16/01/2015 1.00 beta rev 456
+    - Added saving/loading of node device handlers to ZWaveLib (issue #78)
+    - Updated UPnP library from latest source code release
+    - Added ModuleParameter.RequestUpdate() and ModuleParameter.IdleTime, also renamed ModuleParameter.Wait to WaitUpdate (issue #72)
+    - Fixed "precision" issue in ZWaveLib ExtractValueFromBytes (issue #97)
+
+15/01/2015 1.00 beta rev 455
+    - Updated RaspberrySharp-IO with CT/CB8 auto detect and connector mappings
+    - Added X10 RF commands decoding to XTenLib; Major library code rework
+
+14/01/2015 1.00 beta rev 454
+    - Fixed unwanted serialization of module fields as Statistics (also affecting MQTT client app)
+    - Added prelminary support for CubieTruck/Cubieboard3 through RaspberrySharp-IO
+    - Fixed bug in X10 that was not performing first command after HG startup
+    - Fixed bug in Lirc initialization that was preventing IR remote from working when installing HG from debian package
+    - Should fix multiple UC handling in X10 commands issue #30
+    - Added more field icons to sensor widget (pull request #94)
+    - Fixed error with Pepper1 db when lang is not an array (pull request #90)
+    - Changed widget's files extension from *.json to *.js
+    - Code formatting normalization in BaseFiles/html
+
+03/01/2015 1.00 beta rev 453
+    - Fixed c# automation programs not starting after restoring from a backup (issue #86)
+    - Added ModuleParameter.Wait(double seconds) to wait a parameter update for a given time (issue #72)
+    - Deprecated ModuleParameter.LastValue, LastDecimalValue, ValueIncrement (moved to ModuleParameter.Statistics)
+    - Deprecated ModuleParameter.History and moved its functionalities to ModuleParameter.Statistics (issue #80)
+    - Fixed bug introduced with r452 and that was preventing modules config from being saved
+    - Fixed parsing of negative sensor values in ZWaveLib
+    - Fixed "NaN" issue in group values indicator for locales using "," as decimal separator
+    - Added modules.xml fields encryption
+    - Fixed missing scheduler config restore from a backup
+
+30/12/2014 1.00 beta rev 452
+    - Added History object to ModuleParameter (issue #80)
+    - Added "Eden Oled Menu" program
+    - Updated "SSd1306 OLED" and "Eden Oled Display" programs
+    - Fixed GPIO program bug (was firing multiple Status.Level change events if restarted)
+    - Added When.ProgramStopping helper function
+    - Changed default start page to Control Dashboard
+    - Fixed empty "html" folder creation in root directory during system update (issue #83)
+    - Added password hiding in program configuration fields and module feature fields (issue #64)
+    - Added support for Z-Wave ZME_UZB1 by adding /dev/ttyACM0 to the port selection list (Raspberry Pi)
+
+28/12/2014 1.00 beta rev 451
+    - Added Z-Wave automation commands "Thermostat.OperatingStateGet" and "Thermostat.OperatingStateReport" (pull request #79)
+    - Fixed module settings not opening from Control page before going to Group/Modules page (pull request #79)
+    - Fixed bug in Arduino program import
+    - Fixed issue #81
+    
+21/12/2014 1.00 beta rev 450
+    - Added Ssd 1306 OLED display and Eden Board OLED apps for Raspberry Pi
+    - Added new ZWave Api commands: SensorBinary.Get, SensorMultiLevel.Get, Meter.Get, Meter.SupportedGet, Meter.Reset
+    - Added "Meter.Power" parameter handling to Z-Wave MIG interface (Watt counter of a module)
+    - Added system configuration saving on interface settings change
+
+19/12/2014 1.00 beta rev 449
+    - Added (ZWaveLib) duplicate message check for incoming messages
+    - Improved (ZWaveLib) nodes discovery/capability get process
+
+16/12/2014 1.00 beta rev 447
+    - Small fix to ZWaveLib (issue #66)
+    - Updated Windows setup packager
+    - Updated French locale files
+
+15/12/2014 1.00 beta rev 446
+    - Added Hard Reset option to Z-Wave interface settings (UI)
+    - Added ZWaveLib Controller.SoftReset and Controller.HardReset functions
+    - Made some cleanup around ZWaveLib
+
+14/12/2014 1.00 beta rev 444
+    - Improved widget localization function
+    - Added Z-Wave.Me thermostat widget
+    - Added node timeout error message to ZWaveLib
+    - Fixed ZWaveLib bug affecting nodes discovery
+
+12/12/2014 1.00 beta rev 443
+    - Added save prompt when leaving the program editor page with unsaved modifications
+    - Fixed bug in Z-Wave multi instance app
+    - Fixed modules sorting bug
+    - Updated Raspberry Pi GPIO Modules app
+    - Fixed issue #59 and issue #61
+
+08/12/2014 1.00 beta rev 442
+    - Fixed import/export of automation programs of type "arduino" (will be zip bundle instead of simple hgx)
+    - Fixed bug in program editor undo history handling (was not reset when switching between files)
+    - Fixed bug when loading program files larger than 32K
+    - Fixed wrong isConnected assigment order in SerialPortLib
+
 04/12/2014 1.00 beta rev 441
     - Added "MiLight Control" app
     - Fixed bug in interconnections remote module control

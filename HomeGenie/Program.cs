@@ -33,6 +33,9 @@ using Raspberry;
 
 using Newtonsoft.Json;
 using System.Diagnostics;
+using HomeGenie.Service.Constants;
+using HomeGenie.Service.Logging;
+using MIG;
 
 namespace HomeGenie
 {
@@ -45,97 +48,11 @@ namespace HomeGenie
         static void Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionTrapper;
-
-            Console.OutputEncoding = Encoding.UTF8;
-            /* Change current culture
-            CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
-            System.Threading.Thread.CurrentThread.CurrentCulture = culture;
-            System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
-            */
-            var os = Environment.OSVersion;
-            var platform = os.Platform;
-
-            // TODO: run "uname" to determine OS type
-            if (platform == PlatformID.Unix)
-            {
-
-                var libusblink = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "libusb-1.0.so");
-
-                // RaspBerry Pi armel dependency check and needed symlink
-                // TODO: check for armhf version
-                if (File.Exists("/lib/arm-linux-gnueabi/libusb-1.0.so.0.1.0") && !File.Exists(libusblink))
-                {
-                    ShellCommand("ln", " -s \"/lib/arm-linux-gnueabi/libusb-1.0.so.0.1.0\" \"" + libusblink + "\"");
-                }
-
-                // Debian/Ubuntu 64bit dependency and needed symlink check
-                if (File.Exists("/lib/x86_64-linux-gnu/libusb-1.0.so.0") && !File.Exists(libusblink))
-                {
-                    ShellCommand("ln", " -s \"/lib/x86_64-linux-gnu/libusb-1.0.so.0\" \"" + libusblink + "\"");
-                }
-
-                // lirc
-                var liblirclink = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "liblirc_client.so");
-                if (File.Exists("/usr/lib/liblirc_client.so") && !File.Exists(liblirclink))
-                {
-                    ShellCommand("ln", " -s \"/usr/lib/liblirc_client.so\" \"" + liblirclink + "\"");
-                }
-                else if (File.Exists("/usr/lib/liblirc_client.so.0") && !File.Exists(liblirclink))
-                {
-                    ShellCommand("ln", " -s \"/usr/lib/liblirc_client.so.0\" \"" + liblirclink + "\"");
-                }
-
-                // video 4 linux interop
-                if (Raspberry.Board.Current.IsRaspberryPi)
-                {
-                    ShellCommand("cp", " -f \"" + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "v4l/raspbian_libCameraCaptureV4L.so") + "\" \"" + Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "libCameraCaptureV4L.so") + "\"");
-                    //
-                    //if (File.Exists("/usr/lib/libgdiplus.so") && !File.Exists("/usr/local/lib/libgdiplus.so"))
-                    //{
-                    //    ShellCommand("ln", " -s \"/usr/lib/libgdiplus.so\" \"/usr/local/lib/libgdiplus.so\"");
-                    //}
-                }
-                else // fallback (ubuntu and other 64bit debians)
-                {
-                    string v4lfile = "v4l/debian64_libCameraCaptureV4L.so.gd3";
-                    if (!File.Exists("/usr/lib/x86_64-linux-gnu/libgd.so.3"))
-                    {
-                        v4lfile = "v4l/debian64_libCameraCaptureV4L.so";
-                    }
-                    ShellCommand(
-                        "cp",
-                        " -f \"" + Path.Combine(
-                            AppDomain.CurrentDomain.BaseDirectory,
-                            v4lfile
-                        ) + "\" \"" + Path.Combine(
-                            AppDomain.CurrentDomain.BaseDirectory,
-                            "libCameraCaptureV4L.so"
-                        ) + "\""
-                    );
-                }
-                //
-                if (!File.Exists("~/.lircrc"))
-                {
-                    var lircrc = "begin\n" +
-                        "        prog = homegenie\n" +
-                        "        button = KEY_1\n" +
-                        "        repeat = 3\n" +
-                        "        config = KEY_1\n" +
-                        "end\n";
-                    try
-                    {
-                        File.WriteAllText("~/.lircrc", lircrc);
-                    }
-                    catch { }
-                }
-            }
-            //
-            Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
-            //
             AppDomain.CurrentDomain.SetupInformation.ShadowCopyFiles = "true";
-            //
+
+            Console.CancelKeyPress += new ConsoleCancelEventHandler(Console_CancelKeyPress);
+
             _homegenie = new HomeGenieService();
-            //
             do { System.Threading.Thread.Sleep(2000); } while (_isrunning);
         }
 
@@ -191,17 +108,28 @@ namespace HomeGenie
             catch { }
         }
 
-        private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e) {
-            HomeGenieService.LogEvent(new HomeGenie.Data.LogEntry() {
-                Domain = "HomeAutomation.HomeGenie",
-                Source = "UnhandledExceptionTrapper",
-                Description = e.ExceptionObject.ToString(),
-                Property = "HomeGenie.UnhandledException",
-                Value = e.ExceptionObject.ToString()
-            });
+        private static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e) 
+        {
+            var logEntry = new MigEvent(
+                Domains.HomeAutomation_HomeGenie,
+                "Trapper",
+                "Unhandled Exception",
+                "Error.Exception",
+                e.ExceptionObject.ToString()
+            );
+            try
+            {
+                // try broadcast first (we don't want homegenie object to be passed, so use the domain string)
+                _homegenie.RaiseEvent(Domains.HomeGenie_System, logEntry);
+            }
+            catch 
+            {
+                HomeGenieService.LogError(logEntry);
+            }
         }
 
     }
+
 }
 
 

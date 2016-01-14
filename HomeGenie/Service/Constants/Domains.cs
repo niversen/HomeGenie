@@ -33,13 +33,16 @@ namespace HomeGenie.Service.Constants
             = "HomeGenie.UpdateChecker";
         public const string HomeGenie_System
             = "HomeGenie.System";
+        public const string HomeGenie_PackageInstaller
+        = "HomeGenie.PackageInstaller";
+        //
+        public const string MigService_Interfaces
+            = "MIGService.Interfaces";
         //
         public const string HomeAutomation_HomeGenie
             = "HomeAutomation.HomeGenie";
         public const string HomeAutomation_HomeGenie_Automation
-            = "HomeAutomation.HomeGenie.Automation";
-        public const string HomeAutomation_HomeGenie_Scheduler
-            = "HomeAutomation.HomeGenie.Scheduler";
+            = HomeAutomation_HomeGenie + ".Automation";
         public const string HomeAutomation_ZWave
             = "HomeAutomation.ZWave";
         public const string HomeAutomation_X10
@@ -51,9 +54,6 @@ namespace HomeGenie.Service.Constants
         //
         public const string Controllers_LircRemote
             = "Controllers.LircRemote";
-        //
-        public const string EmbeddedSystems_RaspiGPIO
-            = "EmbeddedSystems.RaspiGPIO";
         //
         public const string EmbeddedSystems_Weeco4mGPIO
             = "EmbeddedSystems.Weeco4mGPIO";

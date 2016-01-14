@@ -29,43 +29,12 @@ using HomeGenie.Service;
 
 /*! \mainpage Extend, customize, create!
  *
- * \section terms_used Actors you will find in here
- *
- * **Program Engine** (also known as 'Master Control Program' or 'mcp')
- * \n
- * \n
- * **Automation Program Plugin** (also known as just 'program' or 'app')
- * \n
- * \n
- * **Module**
- * \n It consists of a fixed number of properties (Domain, Address, Name, Description) and a certain number of variant properties (see *Parameters*).
- * \n
- * \n
- * **Module Event**
- * \n .....
- * \n
- * \n
- * **Parameter**
- * \n .....
- * \n
- * \n
- * **Helper Class**
- * \n .....
- * \n
- *
- * \section faq_sec FAQ
- * \subsection faq_1 Where do I find some examples?
- * etc...
- * \subsection faq_2 How do I create a new app?
- * etc...
- * \subsection faq_3 What support libraries are referenced in a app?
- * (Raspberry#, nMQTT, NewtonSoft.Json,...)
- * etc...
- * \subsection faq_4 Can I create my robot's intelligence using HG?
- * Well... good luck! =)
- * \subsection faq_5 Can I add a custom module parameter to the Statistics page?
- * Any parameter with a valid numeric value is automatically added to the Statistics.
- * etc...
+ * \section docs HomeGenie Documentation
+ * \subsection doc_1 User Guide
+ * <a href="http://www.homegenie.it/docs/quickstart.php">http://www.homegenie.it/docs/quickstart.php</a>
+ * \subsection doc_2 Automation Programming and API
+ * <a href="http://genielabs.github.io/HomeGenie">http://genielabs.github.io/HomeGenie</a>
+ * 
  */
 
 namespace HomeGenie.Automation.Scripting
@@ -77,11 +46,12 @@ namespace HomeGenie.Automation.Scripting
         public object ReturnValue = null;
     }
 
+    [Serializable]
     public class ScriptingHost
     {
 
         private HomeGenieService homegenie = null;
-        internal bool executeCodeToRun = false;
+        internal bool executeProgramCode = false;
         //
         private NetHelper netHelper;
         private ProgramHelper programHelper;
@@ -89,6 +59,8 @@ namespace HomeGenie.Automation.Scripting
         private SerialPortHelper serialPortHelper;
         private TcpClientHelper tcpClientHelper;
         private UdpClientHelper udpClientHelper;
+        private MqttClientHelper mqttClientHelper;
+        private KnxClientHelper knxClientHelper;
         private SchedulerHelper schedulerHelper;
 
         public void SetHost(HomeGenieService hg, int programId)
@@ -100,6 +72,8 @@ namespace HomeGenie.Automation.Scripting
             serialPortHelper = new SerialPortHelper();
             tcpClientHelper = new TcpClientHelper();
             udpClientHelper = new UdpClientHelper();
+            mqttClientHelper = new MqttClientHelper();
+            knxClientHelper = new KnxClientHelper();
             schedulerHelper = new SchedulerHelper(homegenie);
         }
 
@@ -174,6 +148,22 @@ namespace HomeGenie.Automation.Scripting
                 return udpClientHelper;
             }
         }
+        
+        public MqttClientHelper MqttClient
+        {
+            get
+            {
+                return mqttClientHelper;
+            }
+        }
+        
+        public KnxClientHelper KnxClient
+        {
+            get
+            {
+                return knxClientHelper;
+            }
+        }
 
         public SchedulerHelper Scheduler
         {
@@ -193,23 +183,27 @@ namespace HomeGenie.Automation.Scripting
             Pause(seconds);
         }
 
+        [Obsolete("Use Program.Run(bool) instead")]
         public void SetConditionTrue()
         {
-            executeCodeToRun = true;
+            executeProgramCode = true;
         }
 
+        [Obsolete("Use Program.Run(bool) instead")]
         public void SetConditionFalse()
         {
-            executeCodeToRun = false;
+            executeProgramCode = false;
         }
 
         public void Reset()
         {
-            //programHelper.Reset();
-            serialPortHelper.Disconnect();
-            tcpClientHelper.Disconnect();
-            udpClientHelper.Disconnect();
-            netHelper.Reset();
+            try { serialPortHelper.Reset(); } catch { }
+            try { tcpClientHelper.Reset(); } catch { }
+            try { udpClientHelper.Reset(); } catch { }
+            try { netHelper.Reset(); } catch { }
+            try { mqttClientHelper.Reset(); } catch { }
+            try { knxClientHelper.Reset(); } catch { }
+            try { programHelper.Reset(); } catch { }
         }
 
     }

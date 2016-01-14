@@ -7,8 +7,6 @@
         "Анализ",
     "home_menu_configure": 
         "Настройка",
-    "home_menu_about": 
-        "О программе",
     "homegenie_about_title": 
         "О программе",
     "control_groups_and_modules": 
@@ -36,13 +34,13 @@
     "configure_menu_groups_modules": 
         "Группы и модули",
     "configure_menu_automation": 
-        "Автоматизация",
+        "Автоматизация и Программы",
     "configure_menu_system": 
-        "Интерфейсы",
+        "Настройки интерфейсов",
     "configure_menu_maintenance": 
         "Обслуживание и обновление",
     "configure_automation_heading": 
-        "Группы<br><font style='color:gray'>автоматизации</font>",
+        "Программы<br><font style='color:gray'>автоматизации</font>",
     "configure_group_newgroup": 
         "Новая группа",
     "configure_group_entergroupname": 
@@ -53,8 +51,14 @@
         "Назад",
     "configure_group_bottombar_group_add": 
         "Добавить группу",
+    "configure_group_group": 
+        "Группы",
     "configure_group_groupname": 
-        "Название группы",
+        "Название",
+    "configure_group_groupwallpaper":
+        "Wallpaper",
+    "configure_group_modulelist":
+        "Module List",
     "configure_group_deletegroup": 
         "Удалить группу?",
     "configure_group_deleteprompt": 
@@ -104,7 +108,7 @@
     "configure_group_bottombar_addmodule": 
         "Добавить модуль",
     "configure_program_automationtitle": 
-        "",
+        "Programs List",
     "configure_program_newprogram": 
         "Новая программа",
     "configure_program_enterprogramname": 
@@ -224,57 +228,11 @@
     "configure_automationgroup_bottombar_group_add": 
         "Добавить группу",
     "configure_interfaces_heading": 
-        "Система и интерфейсы",
-    "configure_interfaces_zwaveoptions": 
-        "Опции интерфейса ZWave",
+        "Настройки интерфейсов",
     "configure_interfaces_optdisable": 
         "Выкл.",
     "configure_interfaces_optenable": 
         "Вкл.",
-    "configure_interfaces_zwaveport": 
-        "Порт устройства",
-    "configure_interfaces_zwavecommontasks": 
-        "Основные задачи ZWave",
-    "configure_interfaces_zwaveaddnode": 
-        "Добавить узел",
-    "configure_interfaces_zwaveremovenode": 
-        "Удалить узел",
-    "configure_interfaces_x10options": 
-        "Опции интерфейса X10",
-    "configure_interfaces_x10port": 
-        "Порт устройства",
-    "configure_interfaces_x10housecodes": 
-        "Используемые коды дома",
-    "configure_interfaces_w800rf32": 
-        "Опции интерфейса W800RF32 RF Receiver",
-    "configure_interfaces_w800rf32port": 
-        "Порт устройства",
-    "configure_interfaces_lircremote": 
-        "Инфракрасные пульты Lirc",
-    "configure_interfaces_lircremoteconfiguration": 
-        "Конфигурация Lirc",
-    "configure_interfaces_lircremoteaddremote": 
-        "Добавить пульт ДУ",
-    "configure_interfaces_camera": 
-        "Камера",
-    "configure_interfaces_cameradesc": 
-        "Работает с любыми Video4Linux совместимыми устройствами на <b>/dev/video0</b> (только x64 Ubuntu и Raspberry Pi).",
-    "configure_interfaces_cameraport": 
-        "Порт устройства",
-    "configure_interfaces_raspigpio": 
-        "Raspberry Pi GPIO",
-    "configure_interfaces_airplay": 
-        "Приемник Airplay",
-    "configure_system_lircremotesadd": 
-        "Добавить пульт ДУ",
-    "configure_system_zwaveaddnodeheading": 
-        "Добавить/Удалить узел",
-    "configure_system_zwaveaddnodepressbutton": 
-        "Нажмите кнопку на устройстве:",
-    "configure_system_zwaveaddnodeoperationtimeout": 
-        "таймаут операции - 10 секунд.",
-    "configure_system_zwaveaddnodeclose": 
-        "Закрыть",
     "configure_maintenance_heading": 
         "Обслуживание",
     "configure_system_theme": 
@@ -334,7 +292,7 @@
     "configure_grouplist": 
         "Список групп",
     "configure_schedulerservice_title": 
-        "Планировщик<br />автоматизации",
+        "Планирование<br />событий",
     "configure_scheduler_events": 
         "События планировщика",
     "configure_schedulerservice_bottombar_event_add": 
@@ -359,6 +317,10 @@
         "Проверить обновления",
     "configure_system_updatemanager_installupdate": 
         "Установить обновления",
+    "configure_system_updatemanager_no_updates":
+        "Нет обновлений.",
+    "configure_system_updatemanager_updates_available":
+        "Доступны следующие обновления:",
     "configure_system_restart_service": 
         "Перезапустить сервис",
     "configure_system_restart": 
@@ -382,7 +344,7 @@
     "configure_maintenance_configuration_info": 
         "<b>Внимание:</b> перед восстановлением файла резервной копии вам надо установить тот же пароль на систему, который был использован при создании резервной копии.",
     "configure_maintenance_configuration_backup": 
-        "Backup",
+        "Сохранить настройки",
     "configure_maintenance_configuration_restore": 
         "Восстановить",
     "configure_maintenance_configuration_factory_reset": 
@@ -415,6 +377,8 @@
         "Документация",
     "actions_menu": 
         "Меню действий",
+    "control_group_configure":
+        "Настроить группу",
     "control_macrorecord_record_macro": 
         "Записать макрос",
     "control_macrorecord_recording": 
@@ -430,9 +394,9 @@
     "control_macrorecord_options_none": 
         "Нет",
     "control_macrorecord_options_mimic": 
-        "Mimic",
+        "Смоделированная",
     "control_macrorecord_options_fixed": 
-        "Фиксированная",
+        "Фикс.",
     "control_macrorecord_options_pauseduration": 
         "Длительность фиксированной паузы",
     "update_options_popup_loading": 
@@ -481,7 +445,7 @@
         "Список программ",
     "configure_programslist_tap_disable": 
         "Нажмите чтобы ВЫКЛЮЧИТЬ программу",
-    "configure_programslist_tab_enable": 
+    "configure_programslist_tap_enable": 
         "Нажмите чтобы ВКЛЮЧИТЬ программу",
     "configure_programslist_deletegroup": 
         "Удалить группу",
@@ -531,18 +495,6 @@
         "Пожалуйста, выберите порт для этого устройства",
     "systemsettings_selectport_button": 
         "Закрыть",
-    "systemsettings_x10housecodes_title": 
-        "Внимание",
-    "systemsettings_x10housecodes_text": 
-        "Пожалуйста, выберите как минимум один код дома.",
-    "systemsettings_x10housecodes_button": 
-        "Закрыть",
-    "configure_interfaces_insteon": 
-        "Insteon PLM (2413S/2413U)",
-    "configure_interfaces_insteonport": 
-        "Порт устройства",
-    "configure_interfaces_insteonx10housecodes": 
-        "Используемые коды дома (только для устройств X10)",
     "configure_group_newgroupconfirm": 
         "Ok",
     "configure_module_optremoveseparator": 
@@ -587,16 +539,6 @@
         "",
     "configure_program_options_update": 
         "Обновить",
-    "configure_interfaces_zwavediscovery": 
-        "Обнаружение",
-    "configure_interfaces_camerasettings": 
-        "Устройство / Разрешение / FPS",
-    "configure_interfaces_upnp": 
-        "Universal Plug &amp; Play",
-    "configure_interfaces_weeco4mgpio": 
-        "WEECOBOARD 4M GPIO",
-    "configure_system_zwavediscoverytitle": 
-        "Обнаружение устройств ZWave",
     "configure_system_updateinstall": 
         "Установка обновления",
     "configure_system_deletemodule": 
@@ -617,22 +559,284 @@
         "Media Receiver",
     "configure_module_typemediatransmitter": 
         "Media Transmitter",
+    "configure_module_doorlock":        
+        "Дверной замок",
     "configure_module_featuresoptions": 
         "Возможности/Свойства",
     "configure_editprogram_files":
-        "Files",
+        "Файлы",
     "configure_program_newfile":
-        "Add File",
+        "Добавить файл",
     "configure_program_filename":
-        "File name",
+        "Имя файла",
     "configure_program_fileslist":
-        "File list",
+        "Список файлов",
     "configure_program_fileslist_exit":
-        "Exit",
+        "Выход",
     "configure_program_fileslist_delete":
-        "Delete",
+        "Удалить",
     "configure_program_fileslist_edit":
-        "Edit",
+        "Редактировать",
     "configure_program_fileslist_add":
-        "Add"
+        "Добавить",
+    "configure_program_hasmodification":
+        "Программа была изменена!",
+    "configure_program_savechangesprompt":
+        "Вы хотите сохранить изменения?",
+    "configure_program_changeswillbelost":
+        "",
+    "configure_program_dontsave":
+        "Нет",
+    "configure_program_saveconfirm":
+        "Сохранить",
+    "statistics_dataanalysis":
+        "Анализ данных",
+    "statistics_counterexpense":
+        "Счетчики и траты",
+    "analyze_statistics_datefrom":
+        "с",
+    "analyze_statistics_dateto":
+        "по",
+    "analyze_statistics_costperunit":
+        "Цена за единицу",
+    "analyze_statistics_overallcounter":
+        "Общий счетчик",
+    "analyze_statistics_totalexpense":
+        "Общие затраты",
+    "configure_program_oroperator":
+        "оператор ИЛИ",
+    "configure_system_statistics_clear":
+        "Удалить все статистические данные",
+    "configure_system_statistics_databasemaxsize":
+        "Максимальный размер базы данных",
+    "configure_system_statistics_changedatabasemaxsize":
+        "Изменить",
+    "configure_system_statistics_databasemaxsizechange":
+        "Максимальный размер (MB)",
+    "configure_system_statistics_databasemaxsizechange_cancel":
+        "Отмена",
+    "configure_system_statistics_databasemaxsizechange_commit":
+        "Изменить",
+    "configure_popupfilter_title":
+        "Фильтры уведомлений о событиях",
+    "configure_popupfilter_optclose":
+        "Закрыть",
+    "configure_system_blockedpopups":
+        "Заблокированные уведомления",
+    "configure_system_blockedpopups_edit":
+        "Изменить",
+    "configure_system_updateinstall_warning":
+        "Настоятельно рекомендуется сделать бекап конфигурации перед любым обновлением.",
+    "configure_automationgroup_widgeteditor":
+        "Редактор виджетов",
+    "configure_widgetlist_heading":
+        "<font style=\"color:gray\">Виджеты</font><br />Список</h3>",
+    "configure_widgetlist_importwidget":
+        "Импортировать виджет",
+    "configure_widgetlist_import":
+        "Импортировать",
+    "configure_widgetlist_add_popuptitle":
+        "Новый виджет",
+    "configure_widgetlist_add_widgetbrand":
+        "Бренд",
+    "configure_widgetlist_add_widgetcategory":
+        "Категория",
+    "configure_widgetlist_add_widgetname":
+        "Название",
+    "configure_widgetlist_newwidgetconfirm":
+        "Добавить",
+    "configure_widgetlist_action_import":
+        "Импортировать",
+    "configure_widgetlist_action_addwidget":
+        "Добавить виджет",
+    "configure_widgeteditor_html":
+        "HTML",
+    "configure_widgeteditor_javascript":
+        "Javascript",
+    "configure_widgeteditor_previewupdate":
+        "Запуск / Предпросмотр",
+    "configure_widgeteditor_hasmodification":
+        "Виджет был изменен!",
+    "configure_widgeteditor_deletetitle":
+        "Удалить виджет?",
+    "configure_widgeteditor_deleteprompt":
+        "Вы уверены, что хотите удалить этот виджет?",
+    "configure_widgetlist_list":
+        "Список виджетов",
+    "configure_widgeteditor_nobindmodule_title":
+        "Выберите модуль",
+    "configure_widgeteditor_nobindmodule_text":
+        "Не нашлось ни одного подходящего модуля для связывания данных. Пожалуйста, выберите модуль.",
+    "configure_widgeteditor_nobindmodule_close":
+        "Закрыть",
+    "configure_widgeteditor_bindtomodule":
+        "связать с модулем",
+    "configure_widgeteditor_selectmodule_placeholder":
+        "(выберите модуль)",
+    "configure_widgeteditor_title":
+        "Редактор виджетов",
+    "configure_widgeteditor_savinghtml":
+        "Сохраняем HTML...",
+    "configure_widgeteditor_savingjavascript":
+        "Сохраняем Javascript...",
+    "configure_interfaces_importdriver":
+        "Установить расширения",        
+    "configure_interfaces_download":
+        "Скачать и установить",        
+    "configure_interfaces_upload":
+        "Загрузить и установить",        
+    "configure_interfaces_addonslist":
+        "Список расширений",        
+    "configure_interfaces_installaddons":
+        "Установить расширения",
+    "configure_interfaces_downloadfromurl":
+        "Скачать пакет расширения с URL",
+    "configure_interfaces_uploadpackage":
+        "Загрузить пакет расширения из файла",
+    "cronwizard_title":
+        "Мастер событий Cron",      
+    "cronwizard_tab_minute":
+        "Минута",        
+    "cronwizard_tab_hour":
+        "Час",        
+    "cronwizard_tab_dayofmonth":
+        "День месяца",        
+    "cronwizard_tab_month":
+        "Месяц",        
+    "cronwizard_tab_dayofweek":
+        "День недели",      
+    "cronwizard_event_willoccur":
+        "Это событие будет происходить",
+    "cronwizard_minuteselect_everyminute":
+        "каждую минуту",        
+    "cronwizard_minuteselect_everysomeminute":
+        "каждые &lt;n&gt; минут",        
+    "cronwizard_minuteselect_eachselected":
+        "каждую выбранную минуту",        
+    "cronwizard_hourselect_everyhour":
+        "каждый час",        
+    "cronwizard_hourselect_everysomehour":
+        "каждые &lt;n&gt; часов",        
+    "cronwizard_hourselect_eachselected":
+        "каждый выбранный час",        
+    "cronwizard_dayselect_everyday":
+        "каждый день",        
+    "cronwizard_dayselect_eachselected":
+        "каждый выбранный день",        
+    "cronwizard_monthselect_everymonth":
+        "каждый месяц",        
+    "cronwizard_monthselect_eachselected":
+        "каждый выбранный месяц",        
+    "cronwizard_dayowselect_everydayow":
+        "каждый день недели",        
+    "cronwizard_dayowselect_eachselected":
+        "каждый выбранный день недели",   
+"##":
+"## COMMON LOCALES",
+"##":
+"##",         
+    "common_month_jan":
+        "Янв",        
+    "common_month_feb":
+        "Фев",        
+    "common_month_mar":
+        "Мар",        
+    "common_month_apr":
+        "Апр",        
+    "common_month_may":
+        "Май",        
+    "common_month_jun":
+        "Июн",        
+    "common_month_jul":
+        "Июл",        
+    "common_month_aug":
+        "Авг",        
+    "common_month_sep":
+        "Сен",        
+    "common_month_oct":
+        "Окт",        
+    "common_month_nov":
+        "Ноя",        
+    "common_month_dec":
+        "Дек",        
+    "common_dayofweek_sun":
+        "Вс",        
+    "common_dayofweek_mon":
+        "Пн",        
+    "common_dayofweek_tue":
+        "Вт",        
+    "common_dayofweek_wed":
+        "Ср",        
+    "common_dayofweek_thu":
+        "Чт",        
+    "common_dayofweek_fri":
+        "Пт",        
+    "common_dayofweek_sat":
+        "Сб",        
+    "common_command_cancel":
+        "Отмена",        
+    "common_command_ok":
+        "Ok",
+    "common_command_proceed":
+        "Продолжить",
+    "common_command_save":
+        "Сохранить",
+    "common_status_notset":
+        "Не установлено",
+    "common_voice_control":
+        "Голосовое управление",
+    "common_command_delete":
+        "Удалить",
+    "common_command_upload":
+        "Загрузить",
+    "common_select_none":
+        "ничто",
+    "common_command_exit":
+        "Выход",
+    "common_command_close":
+        "Закрыть",
+    "common_command_module":
+        "Модуль",
+    "common_command_modules":
+        "Модули",
+"##":
+"## SIDE MENU LOCALES",
+"##":
+"##",
+    "home_menu_home":
+        "Главная",
+    "home_menu_groups":
+        "Группы",
+    "home_menu_statistics":
+        "Статистика",
+    "home_menu_automation":
+        "Автоматизация",
+    "home_menu_programeditor":
+        "Программы",
+    "home_menu_widgeteditor":
+        "Виджеты",
+    "home_menu_scheduler":
+        "Расписание",
+    "home_menu_system":
+        "Система",
+    "home_menu_settings":
+        "Настройки",
+    "home_menu_maintenance":
+        "Обслуживание",
+    "home_menu_about": 
+        "О программе",
+    "home_menu_about_homegenie":
+        "О HomeGenie",
+    "home_menu_about_version":
+        "версия",
+    "home_menu_about_whatshot":
+        "Горячие новости",
+    "home_menu_about_userguide":
+        "Руководство пользователя",
+    "home_menu_about_programming":
+        "Руководство по разработке",
+    "home_menu_about_forum":
+        "Форум для пользователей",
+    "home_menu_about_support":
+        "Поддержите HomeGenie!"
 }

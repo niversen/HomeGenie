@@ -91,7 +91,8 @@
           "@controlled": "true"
         },
         {
-          "@id": "0020"
+          "@id": "0020",
+          "@controlled": "true"
         },
         {
           "@id": "0084",
@@ -190,11 +191,6 @@
           "@inNIF": "false"
         },
         {
-          "@id": "0020",
-          "@controlled": "true",
-          "@inNIF": "false"
-        },
-        {
           "@id": "0085",
           "@controlled": "true",
           "@inNIF": "false"
@@ -210,6 +206,11 @@
           "@inNIF": "false"
         }
       ]
+    },
+    "resourceLinks": {
+      "deviceImage": {
+        "@url": "http://www.pepper1.net/zwavedb/uploads/resources/851726575228300d85b88b4b2d395a319ce2d188.png"
+      }
     }
   }
 }

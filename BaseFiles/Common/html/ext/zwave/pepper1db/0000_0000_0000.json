@@ -42,7 +42,8 @@
     "deviceDescription": {
       "description": {
         "lang": {
-          "@xml:lang": "en"
+          "@xml:lang": "en",
+          "#text": "Z-Wave Gateway based on Raspberry Pi"
         }
       },
       "wakeupNote": {
@@ -52,12 +53,13 @@
       },
       "inclusionNote": {
         "lang": {
-          "@xml:lang": "en",
-          "#text": "Button triple press"
+          "@xml:lang": "en"
         }
       },
-      "productName": "Double Switch",
-      "brandName": "Duwi"
+      "productName": "RaZberry",
+      "brandName": "RaZberry",
+      "productLine": "RaZberry",
+      "productCode": "RaZberry"
     }
   }
 }

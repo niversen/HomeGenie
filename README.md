@@ -1,14 +1,17 @@
-# HomeGenie
+[![Join the chat at https://gitter.im/genielabs/HomeGenie](https://badges.gitter.im/genielabs/HomeGenie.svg)](https://gitter.im/genielabs/HomeGenie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**Project info and documentation**:
-http://homegenie.it
+## Presentation Site and User's Guide
 
+http://www.homegenie.it
+
+## Developer Docs
+
+https://genielabs.github.io/HomeGenie/about.html
 
 ## Supported IDEs
 
 - **MonoDevelop / Xamarin Studio**
 - **Microsoft Visual Studio**
-
 
 ## Building, debugging and packaging HomeGenie
 
@@ -29,18 +32,21 @@ http://homegenie.it
 - Build/Debug the main *HomeGenie* project
 - no setup packaging currently supported for Mac
 
-
-
-
 ## Precompiled packages and install instructions
 
-**Windows, Mac, Linux and Raspberry Pi**:
-http://homegenie.it/download.php
+**Windows, Mac, Linux**
+
+https://genielabs.github.io/HomeGenie/download.html
 
 ## Related projects
 
-- http://github.com/genielabs/HomeGenie-Android
-- http://github.com/genielabs/HomeGenie-WindowsPhone
+- https://github.com/genielabs/HomeGenie-Android
+- https://github.com/genielabs/HomeGenie-WindowsPhone
+- https://github.com/genielabs/mig-service-dotnet
+- https://github.com/genielabs/zwave-lib-dotnet
+- https://github.com/genielabs/x10-lib-dotnet
+- https://github.com/genielabs/w800rf32-lib-dotnet
+- https://github.com/genielabs/serialport-lib-dotnet
 
 ===============
 

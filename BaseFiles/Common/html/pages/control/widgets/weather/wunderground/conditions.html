@@ -1,50 +1,103 @@
-﻿<div data-ui-field="widget" class="ui-overlay-shadow ui-corner-all ui-body-inherit hg-widget-b" style="min-height:170px">
+﻿<style>
+.dropshadow {
+  -webkit-filter: drop-shadow(0px 0px 4px #333);
+  filter:         drop-shadow(0px 0px 4px #333);     
+}
+</style>
+<div data-ui-field="widget" class="ui-overlay-shadow ui-body-inherit ui-corner-all hg-widget-c" style="width:430px;position:relative;min-height:290px;z-index:10;background:none">
+  <div class="ui-body-inherit ui-corner-all" style="position:absolute;opacity:0.8;z-index:-1;left:0;top:0;right:0;bottom:0"></div>
+  <div class="ui-header" style="padding-left:5px;padding-right:5px;font-weight:normal;border:0">
+    <div data-ui-field="name" style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;max-width:380px;font-size:16pt;font-weight:bold;padding:6px;">Weather Underground</div>
+    <a data-ui-field="settings" data-role="button" data-icon="gear" data-iconshadow="false" data-iconpos="notext" class="ui-btn-right">Configuration</a>
+  </div>
+  
+  <div data-ui-field="description" align="center" style="background:rgba(0,0,0,0.25);clear:both;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;max-width:430px;font-size:14pt;">Partly sunny</div>
 
-	<div class="ui-header ui-bar-inherit" style="padding-left:5px;padding-right:5px;font-weight:normal;">
-		<div style="font-weight:bold">Weather Underground</div>
-		<div data-ui-field="name">Waiting for data...</div>
-	    <a data-ui-field="settings" data-role="button" data-icon="edit" data-iconshadow="false" data-direction="reverse" data-iconpos="notext" class="ui-btn-right">Configuration</a>
-	</div>
+  <div class="ui-grid-a" style="clear:both;padding-left:10px;padding-right:10px;margin-bottom:-12px">
+    <div class="ui-block-a" align="center">
+      <!--img style="height:48px;vertical-align:baseline" src="pages/control/widgets/homegenie/generic/images/temperature.png" /-->
+      <span data-ui-field="temperature_value" style="font-size:38pt;line-height:80px">22.5°</span>
+    </div>
+    <div class="ui-block-b" align="center">
+      <img data-ui-field="icon" class="dropshadow" src="pages/control/widgets/weather/wunderground/images/wu_partlysunny.png" />
+    </div>
+  </div>
 
-	<div align="left">
-	    <img data-ui-field="icon" style="margin-left:10px;margin-right:10px;height:64px;float: left" src="pages/control/widgets/jkUtils/OpenWeatherMap/images/icons/10d.png" />
-	    <div style="float: left;margin-top:5px">
-		    <div data-ui-field="description" style="font-size:18pt;">Possible showers</div>
-		    <div style="font-size:10pt;height:28px">Updated: <span data-ui-field="last_updated_value">Not updated!</span></div>
-	    </div>
-		<br clear="all" />
-	</div>
-    <div align="center" style="font-size:10pt;padding-right:20px;">
+  <div align="center" style="margin-top:4px">
+    <img title="wind speed" src="pages/control/widgets/weather/wunderground/images/weather-windy.png" style="margin-left:10px;vertical-align:middle" class="auto-invert" /> <span data-ui-field="windspeed_value" style="line-height:24px">14 km/h</span>
+    <img title="precipitation hour metric" src="pages/control/widgets/weather/wunderground/images/weather-rainy.png" style="margin-left:10px;vertical-align:middle" class="auto-invert" /> <span data-ui-field="rainmm_value" style="line-height:24px">2 mm</span>
+    <img title="sunrise" src="pages/control/widgets/weather/wunderground/images/weather-sunset-up.png" style="margin-left:10px;vertical-align:middle" class="auto-invert" /> <span data-ui-field="sunrise_value" style="line-height:24px">05:55</span>
+    <img title="sunset" src="pages/control/widgets/weather/wunderground/images/weather-sunset-down.png" style="margin-left:10px;vertical-align:middle" class="auto-invert" align="center" /> <span data-ui-field="sunset_value" style="line-height:24px">18:20</span>
+  </div>
 
-        <div style="margin:2px;height:28px;display: inline-block;">
-            <div align="right" style="padding:4px;height:28px;text-align:bottom;width:50px;float:left">
-                <img data-ui-field="temperature_image" alt="Temperature" src="pages/control/widgets/homegenie/generic/images/temperature.png" height="32" align="center" style="vertical-align:bottom" />
-            </div>
-            <div align="left" style="width:80px;padding:4px;float:left;">
-                <font data-ui-field="temperature_value" style="line-height:28px;text-align:bottom;font-size:22pt">22.5</font>
-            </div>
-        </div>
+  <div style="font-size:10pt;margin-top:6px;clear:both" align="center">
 
-        <div style="margin:2px;height:28px;display: inline-block;">
-            <div align="right" style="padding:4px;line-height:28px;text-align:bottom;width:50px;float:left">
-                <b>Sunrise</b>
+    <div style="display: inline-block;" align="left">
+      <table>
+        <tr>
+          <td colspan="2">
+            <div data-ui-field="forecast_1_date" style="font-size:9pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;font-weight:bold">Sat, 31 January</div>
+            <div data-ui-field="forecast_1_desc" style="font-size:9pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px">Snow flurries</div>
+          </td>
+        </tr>
+        <tr>
+          <td align="left" width="46">
+            <img data-ui-field="forecast_1_icon" width="48" class="dropshadow" src="pages/control/widgets/weather/wunderground/images/wu_flurries.png" />
+          </td>
+          <td align="left" valign="top">
+            <div style="font-size:10pt;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width:80px;margin-top:6px">
+              &#x25BC; <span data-ui-field="forecast_1_tmin">-5.2℃</span><br>
+              &#x25B2; <span data-ui-field="forecast_1_tmax">4.1℃</span><br>
             </div>
-            <div align="left" style="width:60px;padding:4px;float:left;">
-                <font data-ui-field="sunrise_value" style="line-height:28px;text-align:bottom;font-size:22pt">05:55</font>
-            </div>
-        </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div style="display: inline-block;" align="left">
+      <table>
+        <tr>
+          <td colspan="2">
+            <div data-ui-field="forecast_2_date" style="font-size:9pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;font-weight:bold">Sun, 1 February</div>
+            <div data-ui-field="forecast_2_desc" style="font-size:9pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">Sunny</div>
+          </td>
+        </tr>
+        <tr>
+          <td align="left" width="46">
+            <img data-ui-field="forecast_2_icon" width="48" class="dropshadow" src="pages/control/widgets/weather/wunderground/images/wu_clear.png" />
+          </td>
+          <td align="left" valign="top">
+            <div style="font-size:10pt;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;width:80px;margin-top:6px">
+              &#x25BC; <span data-ui-field="forecast_2_tmin">6.0℃</span><br>
+              &#x25B2; <span data-ui-field="forecast_2_tmax">10.5℃</span><br>
 
-        <div style="margin:2px;height:28px;display: inline-block;">
-            <div align="right" style="padding:4px;height:28px;line-height:28px;text-align:bottom;width:50px;float:left">
-                <b>Sunset</b>
             </div>
-            <div align="left" style="width:60px;padding:4px;float:left;">
-                <font data-ui-field="sunset_value" style="line-height:28px;text-align:bottom;font-size:22pt">18:25</font>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div style="display: inline-block;">
+      <table>
+        <tr>
+          <td colspan="2">
+            <div data-ui-field="forecast_3_date" style="font-size:9pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;font-weight:bold">Mon, 2 February</div>
+            <div data-ui-field="forecast_3_desc" style="font-size:9pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">Thunderstorms</div>
+          </td>
+        </tr>
+        <tr>
+          <td align="left" width="46">
+            <img data-ui-field="forecast_3_icon" width="48" class="dropshadow" src="pages/control/widgets/weather/wunderground/images/wu_thunderstorms01.png" />
+          </td>
+          <td align="left" valign="top">
+            <div style="font-size:10pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:80px;margin-top:6px">
+              &#x25BC; <span data-ui-field="forecast_3_tmin">3.7℃</span><br>
+              &#x25B2; <span data-ui-field="forecast_3_tmax">9.2℃</span><br>
             </div>
-        </div>
-            
+          </td>
+        </tr>
+      </table>
     </div>
 
-    <br clear="all" />
+    <div data-ui-field="last_updated_value" align="center" style="font-size:9pt;">waiting for data...</div>
 
+  </div>
 </div>
